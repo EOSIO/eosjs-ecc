@@ -1,11 +1,11 @@
 {
   "name": "eosjs-ecc",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Elliptic curve cryptography functions",
   "keywords": "ECC, Private Key, Public Key, Signature, AES, Encryption, Decryption",
   "main": "index.js",
   "scripts": {
-    "build": "mkdir -p dist && browserify -o dist/eosjs-ecc.js -s eos_ecc index.js && sha256sum dist/eosjc-ecc.js"
+    "build": "mkdir -p dist && browserify -o dist/eosjs-ecc.js -s eosjs_ecc index.js && sha256sum dist/eosjs-ecc.js"
   },
   "repository": {
     "type": "git",

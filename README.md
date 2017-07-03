@@ -5,12 +5,8 @@ Private Key, Public Key, Signature, AES, Encryption / Decryption
 
 ## Usage (Node)
 
-```bash
-npm i eos-ecc
-```
-
 ```js
-const {PrivateKey, PublicKey, Signature, Aes} = require('eos-ecc')
+let {PrivateKey, PublicKey, Signature, Aes} = require('eosjs-ecc')
 
 // Create a new random private key
 privateWif = PrivateKey.randomKey().toWif()
@@ -21,14 +17,14 @@ pubkey = PrivateKey.fromWif(privateWif).toPublic().toString()
 
 ```
 
-## Browser (build eos_ecc.js below)
+## Browser (build eosjs-ecc.js below)
 
 ```html
-<script src=eos_ecc.js></script>
+<script src=eosjs-ecc.js></script>
 ```
 
 ```js
-var {PrivateKey} = eos_ecc
+var {PrivateKey} = eosjs_ecc
 var privateWif = PrivateKey.randomKey().toWif()
 var pubkey = PrivateKey.fromWif(privateWif).toPublic().toString()
 console.log(pubkey)
@@ -37,7 +33,7 @@ console.log(pubkey)
 ## Configure
 
 ```js
-const {config} = require('eos-ecc')
+const {config} = require('eosjs-ecc')
 
 // Change the public key address prefix
 // config.address_prefix = 'XXX'
@@ -55,14 +51,14 @@ See [Config](./src/config.js)
 
 ## Build
 
-Dependencies: Unix like OS, sha256sum
+Dependencies (for building only): Unix like OS, sha256sum
 
 ```bash
 git clone https://github.com/eosjs/ecc.git
 cd ecc
 yarn
 yarn build
-# builds: ./dist/eos_ecc.js
+# builds: ./dist/eosjs-ecc.js
 # Verify release hash
 ```
 
