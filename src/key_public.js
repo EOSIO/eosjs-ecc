@@ -92,7 +92,10 @@ class PublicKey {
         public_key = public_key.slice(0, -4);
         var new_checksum = hash.ripemd160(public_key);
         new_checksum = new_checksum.slice(0, 4);
-        assert.deepEqual(checksum, new_checksum, 'Checksum did not match');
+        assert.deepEqual(checksum, new_checksum,
+          'Checksum did not match, ' +
+          `${checksum.toString('hex')} != ${new_checksum.toString('hex')}`
+        );
         return PublicKey.fromBuffer(public_key);
     }
 
