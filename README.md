@@ -54,7 +54,7 @@ See [Config](./src/config.js)
 Dependencies (for building only): Unix like OS, sha256sum
 
 ```bash
-git clone https://github.com/eosjs/ecc.git
+git clone https://github.com/EOSIO/eosjs-ecc.git ecc
 cd ecc
 yarn
 yarn build

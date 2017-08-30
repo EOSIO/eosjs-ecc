@@ -1,6 +1,6 @@
 {
   "name": "eosjs-ecc",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Elliptic curve cryptography functions",
   "keywords": "ECC, Private Key, Public Key, Signature, AES, Encryption, Decryption",
   "main": "index.js",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/eosjs/ecc.git"
+    "url": "git://github.com/EOSIO/eosjs-ecc.git"
   },
   "dependencies": {
     "bigi": "^1.4.2",
