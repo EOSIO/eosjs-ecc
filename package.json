@@ -1,6 +1,6 @@
 {
   "name": "eosjs-ecc",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Elliptic curve cryptography functions",
   "keywords": "ECC, Private Key, Public Key, Signature, AES, Encryption, Decryption",
   "main": "lib/index.js",
@@ -32,6 +32,8 @@
     "browserify": "^14.4.0"
   },
   "babel": {
-    "presets": ["es2015"]
+    "presets": [
+      "es2015"
+    ]
   }
 }
