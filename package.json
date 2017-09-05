@@ -1,6 +1,6 @@
 {
   "name": "eosjs-ecc",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "description": "Elliptic curve cryptography functions",
   "keywords": "ECC, Private Key, Public Key, Signature, AES, Encryption, Decryption",
   "main": "lib/index.js",
