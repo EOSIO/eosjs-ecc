@@ -7,10 +7,9 @@ Private Key, Public Key, Signature, AES, Encryption / Decryption
 # Import
 
 ```js
-ecc = require('eosjs-ecc')
-
-assert(/^5[HJK]/.test(ecc.randomKey()))
-// ..
+import ecc from 'eosjs-ecc'
+// or
+const ecc = require('eosjs-ecc')
 ```
 
 # Common API
@@ -19,26 +18,28 @@ assert(/^5[HJK]/.test(ecc.randomKey()))
 
 ## wif
 
-<https://en.bitcoin.it/wiki/Wallet_import_format>
+[Wallet Import Format](https://en.bitcoin.it/wiki/Wallet_import_format)
 
 Type: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)
 
-## pubkey
+## ecc
 
-EOSKey..
-
-Type: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)
-
-## randomKey
+### randomKey
 
 **Parameters**
 
 -   `cpuEntropyBits` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** gather additional entropy
     from a CPU mining algorithm.  Set to 0 for testing. (optional, default `128`)
 
+**Examples**
+
+```javascript
+ecc.randomKey()
+```
+
 Returns **[wif](#wif)** 
 
-## seedPrivate
+### seedPrivate
 
 **Parameters**
 
@@ -46,34 +47,58 @@ Returns **[wif](#wif)**
     seed produces the same private key every time.  At least 128 random
     bits should be used to produce a good private key.
 
+**Examples**
+
+```javascript
+ecc.seedPrivate('secret') === wif
+```
+
 Returns **[wif](#wif)** 
 
-## privateToPublic
+### privateToPublic
 
 **Parameters**
 
 -   `wif` **[wif](#wif)** 
 
+**Examples**
+
+```javascript
+ecc.privateToPublic(wif) === pubkey
+```
+
 Returns **[pubkey](#pubkey)** 
 
-## isValidPublic
+### isValidPublic
 
 **Parameters**
 
 -   `pubkey` **[pubkey](#pubkey)** like EOSKey..
 -   `addressPrefix` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** like EOS (optional, default `config.address_prefix`)
 
+**Examples**
+
+```javascript
+ecc.isValidPublic(pubkey) === true
+```
+
 Returns **([boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean) \| [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String))** true or error string
 
-## isValidPrivate
+### isValidPrivate
 
 **Parameters**
 
 -   `wif` **[wif](#wif)** 
 
+**Examples**
+
+```javascript
+ecc.isValidPrivate(wif) === true
+```
+
 Returns **([boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean) \| [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String))** true or error string
 
-## sign
+### sign
 
 Create a signature using data or a hash.
 
@@ -83,9 +108,15 @@ Create a signature using data or a hash.
 -   `privateKey` **([wif](#wif) | PrivateKey)** 
 -   `hashData` **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** sha256 hash data before signing (optional, default `true`)
 
+**Examples**
+
+```javascript
+ecc.sign('I am alive', wif)
+```
+
 Returns **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** hex signature
 
-## verify
+### verify
 
 Verify signed data.
 
@@ -96,9 +127,15 @@ Verify signed data.
 -   `pubkey` **([pubkey](#pubkey) | PublicKey)** 
 -   `hashData` **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** sha256 hash data before verify (optional, default `true`)
 
+**Examples**
+
+```javascript
+ecc.verify(signature, 'I am alive', pubkey) === true
+```
+
 Returns **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** 
 
-## recover
+### recover
 
 Recover the public key used to create the signature.
 
@@ -108,21 +145,39 @@ Recover the public key used to create the signature.
 -   `data` **([String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Buffer](https://nodejs.org/api/buffer.html))** 
 -   `hashData` **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** sha256 hash data before recover (optional, default `true`)
 
+**Examples**
+
+```javascript
+ecc.recover(signature, 'I am alive') === pubkey
+```
+
 Returns **[pubkey](#pubkey)** 
 
-## sha256
+### sha256
 
 **Parameters**
 
 -   `data` **([string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Buffer](https://nodejs.org/api/buffer.html))** 
 -   `encoding` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 'hex', 'binary' or 'base64' (optional, default `'hex'`)
 
+**Examples**
+
+```javascript
+ecc.sha256('I am alive') === '8a72..'
+```
+
 Returns **([string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Buffer](https://nodejs.org/api/buffer.html))** Buffer when encoding is null, or string
+
+## pubkey
+
+EOSKey..
+
+Type: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)
 
 # Usage (Object API)
 
 ```js
-let {PrivateKey, PublicKey, Signature, Aes} = require('eosjs-ecc')
+let {PrivateKey, PublicKey, Signature, Aes, key_utils, config} = require('eosjs-ecc')
 
 // Create a new random private key
 privateWif = PrivateKey.randomKey().toWif()
@@ -136,6 +191,8 @@ pubkey = PrivateKey.fromWif(privateWif).toPublic().toString()
 -   [PublicKey](./src/key_public.js)
 -   [Signature](./src/signature.js)
 -   [Aes](./src/aes.js)
+-   [key_utils](./src/key_utils.js)
+-   [config](./src/config.js)
 
 # Browser
 
