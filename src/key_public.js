@@ -114,8 +114,8 @@ PublicKey.fromString = function(public_key, address_prefix = config.address_pref
 }
 
 /**
-    @arg {string} public_key - like STMXyz...
-    @arg {string} address_prefix - like STM
+    @arg {string} public_key - like EOSKey..
+    @arg {string} address_prefix - like EOS
     @throws {Error} if public key is invalid
     @return PublicKey
 */

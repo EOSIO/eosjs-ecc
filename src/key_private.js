@@ -14,6 +14,12 @@ const n = secp256k1.n
 module.exports = PrivateKey;
 
 /**
+  @typedef {string} wif - https://en.bitcoin.it/wiki/Wallet_import_format
+  @typedef {string} pubkey - EOSKey..
+  @typedef {ecurve.Point} Point
+*/
+
+/**
   @param {BigInteger} d
 */
 function PrivateKey(d) {
@@ -21,6 +27,9 @@ function PrivateKey(d) {
         throw new TypeError('BigInteger private key point required')
     }
 
+    /**
+        @return  {wif}
+    */
     function toWif() {
         var private_key = toBuffer();
         // checksum includes the version
@@ -125,7 +134,12 @@ PrivateKey.fromBuffer = function(buf) {
     return PrivateKey(BigInteger.fromBuffer(buf));
 }
 
-/** @arg {string} seed - any length string.  This is private, the same seed produces the same private key every time.  */
+/**
+    @arg {string} seed - any length string.  This is private, the same seed
+    produces the same private key every time.
+
+    @return {PrivateKey}
+*/
 PrivateKey.fromSeed = function(seed) { // generate_private_key
     if (!(typeof seed === 'string')) {
         throw new Error('seed must be of type string');
