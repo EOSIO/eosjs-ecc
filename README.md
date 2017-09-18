@@ -4,10 +4,11 @@
 
 Private Key, Public Key, Signature, AES, Encryption / Decryption
 
-# Common API Example
+# Import
 
 ```js
 ecc = require('eosjs-ecc')
+
 assert(/^5[HJK]/.test(ecc.randomKey()))
 // ..
 ```
@@ -18,7 +19,9 @@ assert(/^5[HJK]/.test(ecc.randomKey()))
 
 ## randomKey
 
-TODO fast param (skips cpu entropy)
+**Parameters**
+
+-   `cpuEntropyBits`  
 
 Returns **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** wif
 
@@ -56,7 +59,16 @@ pubkey = PrivateKey.fromWif(privateWif).toPublic().toString()
 -   [Signature](./src/signature.js)
 -   [Aes](./src/aes.js)
 
-# Browser (build eosjs-ecc.js below)
+# Browser
+
+```bash
+git clone https://github.com/EOSIO/eosjs-ecc.git
+cd eosjs-ecc
+npm install
+npm run build
+# builds: ./dist/eosjs-ecc.js
+# Verify release hash
+```
 
 ```html
 <script src=eosjs-ecc.js></script>
@@ -79,20 +91,3 @@ const {config} = require('eosjs-ecc')
 ```
 
 See [Config](./src/config.js)
-
-# Build (Browser)
-
-For:
-
-```html
-<script src=eosjs-ecc.js></script>
-```
-
-```bash
-git clone https://github.com/EOSIO/eosjs-ecc.git ecc
-cd ecc
-npm install
-npm run build
-# builds: ./dist/eosjs-ecc.js
-# Verify release hash
-```
