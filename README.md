@@ -1,4 +1,6 @@
 [![NPM](https://img.shields.io/npm/v/eosjs-ecc.svg)](https://www.npmjs.org/package/eosjs-ecc)
+[![Build Status](https://travis-ci.org/EOSIO/eosjs-ecc.svg?branch=master)](https://travis-ci.org/EOSIO/eosjs-ecc)
+
 
 # Elliptic curve cryptography functions (ECC)
 
@@ -210,9 +212,9 @@ npm run build
 ```
 
 ```js
-var {PrivateKey} = eosjs_ecc
-var privateWif = PrivateKey.randomKey().toWif()
-var pubkey = PrivateKey.fromWif(privateWif).toPublic().toString()
+var ecc = eosjs_ecc
+var privateWif = ecc.randomKey()
+var pubkey = ecc.privateToPublic(privateWif)
 console.log(pubkey)
 ```
 

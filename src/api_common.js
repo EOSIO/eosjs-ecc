@@ -126,7 +126,7 @@ const ecc = {
         @arg {string} [encoding = 'hex'] - 'hex', 'binary' or 'base64'
         @return {string|Buffer} - Buffer when encoding is null, or string
 
-        @example ecc.sha256('I am alive') === '8a72..'
+        @example ecc.sha256('hashme') === '02208b..'
     */
     sha256: (data, encoding = 'hex') => hash.sha256(data, encoding)
 
