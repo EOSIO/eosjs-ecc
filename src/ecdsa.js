@@ -91,7 +91,7 @@ function sign(curve, hash, d, nonce) {
     s = n.subtract(s)
   }
 
-  return new ECSignature(r, s)
+  return ECSignature(r, s)
 }
 
 function verifyRaw(curve, e, signature, Q) {

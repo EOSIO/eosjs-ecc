@@ -78,7 +78,7 @@ function crypt(private_key, public_key, nonce, message, checksum) {
 
     // D E B U G
     // console.log('crypt', {
-    //     priv_to_pub: private_key.toPublicKey().toString(),
+    //     priv_to_pub: private_key.toPublic().toString(),
     //     pub: public_key.toString(),
     //     nonce: nonce.toString(),
     //     message: message.length,

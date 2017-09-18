@@ -7,8 +7,47 @@ function ECSignature(r, s) {
   enforceType(BigInteger, r)
   enforceType(BigInteger, s)
 
-  this.r = r
-  this.s = s
+  function toCompact(i, compressed) {
+    if (compressed) i += 4
+    i += 27
+
+    var buffer = new Buffer(65)
+    buffer.writeUInt8(i, 0)
+
+    r.toBuffer(32).copy(buffer, 1)
+    s.toBuffer(32).copy(buffer, 33)
+
+    return buffer
+  }
+
+  function toDER() {
+    var rBa = r.toDERInteger()
+    var sBa = s.toDERInteger()
+
+    var sequence = []
+
+    // INTEGER
+    sequence.push(0x02, rBa.length)
+    sequence = sequence.concat(rBa)
+
+    // INTEGER
+    sequence.push(0x02, sBa.length)
+    sequence = sequence.concat(sBa)
+
+    // SEQUENCE
+    sequence.unshift(0x30, sequence.length)
+
+    return new Buffer(sequence)
+  }
+
+  function toScriptSignature(hashType) {
+    var hashTypeBuffer = new Buffer(1)
+    hashTypeBuffer.writeUInt8(hashType, 0)
+
+    return Buffer.concat([toDER(), hashTypeBuffer])
+  }
+
+  return {r, s, toCompact, toDER, toScriptSignature}
 }
 
 // Import operations
@@ -29,7 +68,7 @@ ECSignature.parseCompact = function(buffer) {
   return {
     compressed: compressed,
     i: i,
-    signature: new ECSignature(r, s)
+    signature: ECSignature(r, s)
   }
 }
 
@@ -66,7 +105,7 @@ ECSignature.fromDER = function(buffer) {
   assert(r.signum() >= 0, 'R value is negative')
   assert(s.signum() >= 0, 'S value is negative')
 
-  return new ECSignature(r, s)
+  return ECSignature(r, s)
 }
 
 // FIXME: 0x00, 0x04, 0x80 are SIGHASH_* boundary constants, importing Transaction causes a circular dependency
@@ -80,47 +119,6 @@ ECSignature.parseScriptSignature = function(buffer) {
     signature: ECSignature.fromDER(buffer.slice(0, -1)),
     hashType: hashType
   }
-}
-
-// Export operations
-ECSignature.prototype.toCompact = function(i, compressed) {
-  if (compressed) i += 4
-  i += 27
-
-  var buffer = new Buffer(65)
-  buffer.writeUInt8(i, 0)
-
-  this.r.toBuffer(32).copy(buffer, 1)
-  this.s.toBuffer(32).copy(buffer, 33)
-
-  return buffer
-}
-
-ECSignature.prototype.toDER = function() {
-  var rBa = this.r.toDERInteger()
-  var sBa = this.s.toDERInteger()
-
-  var sequence = []
-
-  // INTEGER
-  sequence.push(0x02, rBa.length)
-  sequence = sequence.concat(rBa)
-
-  // INTEGER
-  sequence.push(0x02, sBa.length)
-  sequence = sequence.concat(sBa)
-
-  // SEQUENCE
-  sequence.unshift(0x30, sequence.length)
-
-  return new Buffer(sequence)
-}
-
-ECSignature.prototype.toScriptSignature = function(hashType) {
-  var hashTypeBuffer = new Buffer(1)
-  hashTypeBuffer.writeUInt8(hashType, 0)
-
-  return Buffer.concat([this.toDER(), hashTypeBuffer])
 }
 
 module.exports = ECSignature
