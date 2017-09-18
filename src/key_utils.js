@@ -47,7 +47,7 @@ const externalEntropyArray = secureRandom.randomBuffer(101)
     </code>
 */
 function addEntropy(...ints) {
-    entropyCount++
+    entropyCount += ints.length
     for(const i of ints) {
         const pos = entropyPos++ % 101
         const i2 = externalEntropyArray[pos] += i
