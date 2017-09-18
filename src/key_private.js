@@ -72,8 +72,8 @@ class PrivateKey {
         return PrivateKey.fromBuffer(private_key);
     }
 
-    static randomKey() {
-        return PrivateKey.fromBuffer(keyUtils.random32ByteBuffer());
+    static randomKey(cpuEntropyBits) {
+        return PrivateKey.fromBuffer(keyUtils.random32ByteBuffer({cpuEntropyBits}));
     }
 
     toWif() {

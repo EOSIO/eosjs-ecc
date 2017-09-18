@@ -12,14 +12,14 @@ module.exports = {
 
     Additional forms of entropy are used.  A week random number generator can run out of entropy.  This should ensure even the worst random number implementation will be reasonably safe.
 */
-function random32ByteBuffer() {
+function random32ByteBuffer({cpuEntropyBits = 128}) {
     if(entropyCount > 0) {
         console.log(`Additional private key entropy: ${entropyCount} events`)
         entropyCount = 0
     }
     const hash_array = []
     hash_array.push(secureRandom.randomBuffer(32))
-    hash_array.push(Buffer.from(cpuEntropy()))
+    hash_array.push(Buffer.from(cpuEntropy(cpuEntropyBits)))
     hash_array.push(externalEntropyArray)
     hash_array.push(browserEntropy())
     return hash.sha256(Buffer.concat(hash_array))
@@ -64,13 +64,11 @@ function addEntropy(...ints) {
     Based on more-entropy.
     @see https://github.com/keybase/more-entropy/blob/master/src/generator.iced
 */
-function cpuEntropy() {
-    // The sample size probably should not be configurable, that could be an attack vector.
-    const samples = 128
+function cpuEntropy(cpuEntropyBits) {
     let collected = []
     let lastCount = null
     let lowEntropySamples = 0
-    while(collected.length < samples) {
+    while(collected.length < cpuEntropyBits) {
         const count = floatingPointCount()
         if(lastCount != null) {
             const delta = count - lastCount
@@ -89,7 +87,8 @@ function cpuEntropy() {
         lastCount = count
     }
     if(lowEntropySamples > 10) {
-        const pct = Number(lowEntropySamples / samples * 100).toFixed(2)
+        const pct = Number(lowEntropySamples / cpuEntropyBits * 100).toFixed(2)
+        // Is this algorithm getting inefficient?
         console.error(`WARN: ${pct}% low CPU entropy re-sampled`);
     }
     return collected

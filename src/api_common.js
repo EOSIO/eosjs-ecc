@@ -9,7 +9,7 @@ module.exports = {
     /**
         @return {string} wif
     */
-    randomKey: () => PrivateKey.randomKey().toString(),
+    randomKey: (cpuEntropyBits) => PrivateKey.randomKey(cpuEntropyBits).toString(),
 
     seedPrivate: seed => PrivateKey.fromSeed(seed).toString(),
 
