@@ -1,7 +1,6 @@
 [![NPM](https://img.shields.io/npm/v/eosjs-ecc.svg)](https://www.npmjs.org/package/eosjs-ecc)
 [![Build Status](https://travis-ci.org/EOSIO/eosjs-ecc.svg?branch=master)](https://travis-ci.org/EOSIO/eosjs-ecc)
 
-
 # Elliptic curve cryptography functions (ECC)
 
 Private Key, Public Key, Signature, AES, Encryption / Decryption
@@ -165,7 +164,7 @@ Returns **[pubkey](#pubkey)**
 **Examples**
 
 ```javascript
-ecc.sha256('I am alive') === '8a72..'
+ecc.sha256('hashme') === '02208b..'
 ```
 
 Returns **([string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Buffer](https://nodejs.org/api/buffer.html))** Buffer when encoding is null, or string
