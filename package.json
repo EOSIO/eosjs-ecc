@@ -28,7 +28,7 @@
     "more-entropy": "^0.0.7",
     "secure-random": "^1.1.1"
   },
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
