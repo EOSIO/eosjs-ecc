@@ -110,7 +110,7 @@ function floatingPointCount() {
 const log2 = x => Math.log(x) / Math.LN2
 
 /**
-    Attempt to gather and hash information from the browser's window, history, and supported mime types.  For non-browser environments this simply includes secure random data.  In any event, the information is re-hashed in a loop for .25 seconds.
+    Attempt to gather and hash information from the browser's window, history, and supported mime types.  For non-browser environments this simply includes secure random data.  In any event, the information is re-hashed in a loop for 25 milliseconds seconds.
 
     @return {Buffer} 32 bytes
 */
@@ -135,7 +135,7 @@ function browserEntropy() {
 
     let entropy = entropyStr;
     const start_t = Date.now();
-    while (Date.now() - start_t < 250)
+    while (Date.now() - start_t < 25)
         entropy = hash.sha256(entropy);
 
     return entropy;
