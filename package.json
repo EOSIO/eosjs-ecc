@@ -29,7 +29,7 @@
     "create-hmac": "^1.1.6",
     "ecurve": "^1.0.5",
     "more-entropy": "^0.0.7",
-    "secure-random": "^1.1.1"
+    "randombytes": "^2.0.5"
   },
   "license": "MIT",
   "devDependencies": {

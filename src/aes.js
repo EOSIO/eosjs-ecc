@@ -1,4 +1,4 @@
-const secureRandom = require('secure-random')
+const randomBytes = require('randombytes')
 const ByteBuffer = require('bytebuffer')
 const crypto = require('browserify-aes')
 const assert = require('assert')
@@ -136,7 +136,7 @@ function cryptoJsEncrypt(message, key, iv) {
 */
 function uniqueNonce() {
     if(unique_nonce_entropy === null) {
-        const b = secureRandom.randomUint8Array(2)
+        const b = new Uint8Array(randomBytes(2))
         unique_nonce_entropy = parseInt(b[0] << 8 | b[1], 10)
     }
     let long = Long.fromNumber(Date.now())

@@ -1,5 +1,5 @@
 
-const secureRandom = require('secure-random');
+const randomBytes = require('randombytes');
 const hash = require('./hash');
 
 module.exports = {
@@ -18,7 +18,7 @@ function random32ByteBuffer({cpuEntropyBits = 128} = {}) {
         entropyCount = 0
     }
     const hash_array = []
-    hash_array.push(secureRandom.randomBuffer(32))
+    hash_array.push(randomBytes(32))
     hash_array.push(Buffer.from(cpuEntropy(cpuEntropyBits)))
     hash_array.push(externalEntropyArray)
     hash_array.push(browserEntropy())
@@ -26,7 +26,7 @@ function random32ByteBuffer({cpuEntropyBits = 128} = {}) {
 }
 
 let entropyPos = 0, entropyCount = 0
-const externalEntropyArray = secureRandom.randomBuffer(101)
+const externalEntropyArray = randomBytes(101)
 
 /**
     Add entropy via external events (like mouse events).  This may be called many times while the amount of data saved is limited.  Data is retained in RAM for the life of this module.
@@ -119,7 +119,7 @@ const log2 = x => Math.log(x) / Math.LN2
     @return {Buffer} 32 bytes
 */
 function browserEntropy() {
-    let entropyStr = Array(secureRandom.randomBuffer(101)).join()
+    let entropyStr = Array(randomBytes(101)).join()
     try {
         entropyStr += (new Date()).toString() + " " + window.screen.height + " " + window.screen.width + " " +
             window.screen.colorDepth + " " + " " + window.screen.availHeight + " " + window.screen.availWidth + " " +
