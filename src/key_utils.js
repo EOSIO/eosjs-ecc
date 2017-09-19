@@ -79,7 +79,9 @@ function cpuEntropy(cpuEntropyBits) {
             // how many bits of entropy were in this sample
             const bits = Math.floor(log2(Math.abs(delta)) + 1)
             if(bits < 4) {
-                lowEntropySamples++
+                if(bits < 2) {
+                    lowEntropySamples++
+                }
                 continue
             }
             collected.push(delta)
@@ -89,19 +91,21 @@ function cpuEntropy(cpuEntropyBits) {
     if(lowEntropySamples > 10) {
         const pct = Number(lowEntropySamples / cpuEntropyBits * 100).toFixed(2)
         // Is this algorithm getting inefficient?
-        console.error(`WARN: ${pct}% low CPU entropy re-sampled`);
+        console.warn(`WARN: ${pct}% low CPU entropy re-sampled`);
     }
     return collected
 }
 
 /**
-    Count while performing floating point operations during a fixed time (7 ms for example).  Using a fixed time makes this algorithm predictable in runtime.
+    Count while performing floating point operations during a fixed time
+    (7 ms for example).  Using a fixed time makes this algorithm
+    predictable in runtime.
 */
 function floatingPointCount() {
     const workMinMs = 7
     const d = Date.now()
     let i = 0, x = 0
-    while (Date.now()  < d + workMinMs + 1) {
+    while (Date.now() < d + workMinMs + 1) {
         x = Math.sin(Math.sqrt(Math.log(++i + x)))
     }
     return i
