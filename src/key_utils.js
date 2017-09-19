@@ -12,7 +12,7 @@ module.exports = {
 
     Additional forms of entropy are used.  A week random number generator can run out of entropy.  This should ensure even the worst random number implementation will be reasonably safe.
 */
-function random32ByteBuffer({cpuEntropyBits = 128}) {
+function random32ByteBuffer({cpuEntropyBits = 128} = {}) {
     if(entropyCount > 0) {
         console.log(`Additional private key entropy: ${entropyCount} events`)
         entropyCount = 0
