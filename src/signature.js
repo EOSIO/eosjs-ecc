@@ -45,7 +45,7 @@ function Signature(r, s, i) {
         if(dataSha256.length !== 32 || !Buffer.isBuffer(dataSha256))
             throw new Error("dataSha256: 32 byte buffer requred")
 
-        const publicKey = toPublicObj(pubkey)
+        const publicKey = PublicKey(pubkey)
         assert(publicKey, 'pubkey required')
 
         return ecdsa.verify(
@@ -167,7 +167,7 @@ Signature.signHash = function(dataSha256, privateKey) {
     if( dataSha256.length !== 32 || ! Buffer.isBuffer(dataSha256) )
         throw new Error("dataSha256: 32 byte buffer requred")
 
-    privateKey = toPrivateObj(privateKey)
+    privateKey = PrivateKey(privateKey)
     assert(privateKey, 'privateKey required')
 
     var der, e, ecsignature, i, lenR, lenS, nonce;
@@ -223,6 +223,3 @@ Signature.from = o => {
     }
     return signature
 }
-
-const toPrivateObj = o => (o ? o.d ? o : PrivateKey.fromWif(o) : o/*null or undefined*/)
-const toPublicObj = o => (o ? o.Q ? o : PublicKey.fromString(o) : o/*null or undefined*/)

@@ -49,11 +49,11 @@ function decrypt(private_key, public_key, nonce, message, checksum) {
     @private
 */
 function crypt(private_key, public_key, nonce, message, checksum) {
-    private_key = toPrivateObj(private_key)
+    private_key = PrivateKey(private_key)
     if (!private_key)
         throw new TypeError('private_key is required')
 
-    public_key = toPublicObj(public_key)
+    public_key = PublicKey(public_key)
     if (!public_key)
         throw new TypeError('public_key is required')
 
@@ -150,7 +150,5 @@ function uniqueNonce() {
 let unique_nonce_entropy = null
 // for(let i=1; i < 10; i++) key.uniqueNonce()
 
-const toPrivateObj = o => (o ? o.d ? o : PrivateKey.fromWif(o) : o/*null or undefined*/)
-const toPublicObj = o => (o ? o.Q ? o : PublicKey.fromString(o) : o/*null or undefined*/)
 const toLongObj = o => (o ? Long.isLong(o) ? o : Long.fromString(o) : o)
 const toBinaryBuffer = o => (o ? Buffer.isBuffer(o) ? o : new Buffer(o, 'binary') : o)

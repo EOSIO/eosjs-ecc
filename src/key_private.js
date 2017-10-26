@@ -23,8 +23,17 @@ module.exports = PrivateKey;
   @param {BigInteger} d
 */
 function PrivateKey(d) {
+
+    if(typeof d === 'string') {
+        return PrivateKey.fromWif(d)
+    } else if(Buffer.isBuffer(d)) {
+        return PrivateKey.fromBuffer(d)
+    } else if(typeof d === 'object' && BigInteger.isBigInteger(d.d)) {
+        return PrivateKey(d.d)
+    }
+
     if(!BigInteger.isBigInteger(d)) {
-        throw new TypeError('BigInteger private key point required')
+        throw new TypeError('Invalid private key')
     }
 
     /**

@@ -14,8 +14,16 @@ module.exports = PublicKey
 /** @param {ecurve.Point} public key */
 function PublicKey(Q) {
 
-    if(!Q.compressed) {
-        throw new TypeError('Invalid public key point')
+    if(typeof Q === 'string') {
+        return PublicKey.fromString(Q)
+    } else if(Buffer.isBuffer(Q)) {
+        return PublicKey.fromBuffer(Q)
+    } else if(typeof Q === 'object' && Q.Q) {
+      return PublicKey(Q.Q)
+    }
+
+    if(typeof Q !== 'object' || !Q.compressed) {
+        throw new TypeError('Invalid public key')
     }
 
     function toBuffer(compressed = Q.compressed) {

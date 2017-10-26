@@ -6,14 +6,14 @@
   "main": "lib/index.js",
   "scripts": {
     "test": "mocha src/*.test.js",
-    "coverage": "istanbul cover _mocha -- -R spec index.test.js **/*.test.js",
+    "coverage": "istanbul cover _mocha -- -R spec src/*.test.js",
     "coveralls": "npm run coverage && cat ./coverage/lcov.info | ./node_modules/.bin/coveralls",
     "prepublish": "npm run build_lib && npm run docs",
-    "docs": "npm run docs_common",
-    "docs_common": "npm run doc -- readme src/api_common.js --section \"Common API\" --shallow",
-    "doc": "node_modules/documentation/bin/documentation.js",
+    "docs": "npm run documentation -- readme src/api_common.js --section \"Common API\" --shallow",
+    "documentation": "node_modules/documentation/bin/documentation.js",
+    "build": "npm run docs && npm run build_lib && npm run build_browser",
     "build_lib": "node_modules/babel-cli/bin/babel.js src --out-dir lib",
-    "build": "mkdir -p dist && browserify -o dist/eosjs-ecc.js -s eosjs_ecc src/index.js && sha256sum dist/eosjs-ecc.js"
+    "build_browser": "mkdir -p dist && browserify -o dist/eosjs-ecc.js -s eosjs_ecc src/index.js && sha256sum dist/eosjs-ecc.js"
   },
   "repository": {
     "type": "git",
