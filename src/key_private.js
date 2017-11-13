@@ -7,6 +7,7 @@ const assert = require('assert');
 const hash = require('./hash');
 const PublicKey = require('./key_public');
 const keyUtils = require('./key_utils');
+const createHash = require('create-hash')
 
 const G = secp256k1.G
 const n = secp256k1.n
@@ -95,15 +96,16 @@ function PrivateKey(d) {
     // }
 
     /**
-      @arg {string} role or smart contract permission name.
+      @arg {string} name - child key name.
+      @return {PrivateKey}
 
-      @example masterPrivate.child('owner').child('active')
-      @example masterPrivate.child('mycontract').child('myperm')
+      @example activePrivate = masterPrivate.getChildKey('owner').getChildKey('active')
+      @example activePrivate.getChildKey('mycontract').getChildKey('myperm')
     */
-    const getChildKey = (role) => {
-      console.error('WARNING: getChildKey called, this needs testing against eosd');
-      return createHash('sha256')
-      .update(toBuffer()).update(role).digest()
+    function getChildKey(name) {
+      console.error('WARNING: getChildKey untested against eosd');
+      const index = createHash('sha256').update(toBuffer()).update(name).digest()
+      return PrivateKey(index)
     }
 
     function toHex() {
