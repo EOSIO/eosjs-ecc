@@ -15,7 +15,9 @@ module.exports = {
 
 /**
     Spec: http://localhost:3002/steem/@dantheman/how-to-encrypt-a-memo-when-transferring-steem
+
     @throws {Error|TypeError} - "Invalid Key, ..."
+
     @arg {PrivateKey} private_key - required and used for decryption
     @arg {PublicKey} public_key - required and used to calcualte the shared secret
     @arg {string} [nonce = uniqueNonce()] - assigned a random unique uint64
@@ -31,12 +33,15 @@ function encrypt(private_key, public_key, message, nonce = uniqueNonce()) {
 
 /**
     Spec: http://localhost:3002/steem/@dantheman/how-to-encrypt-a-memo-when-transferring-steem
+
     @arg {PrivateKey} private_key - required and used for decryption
     @arg {PublicKey} public_key - required and used to calcualte the shared secret
     @arg {string} nonce - random or unique uint64, provides entropy when re-using the same private/public keys.
     @arg {Buffer} message - Encrypted or plain text message
     @arg {number} checksum - shared secret checksum
+
     @throws {Error|TypeError} - "Invalid Key, ..."
+
     @return {Buffer} - message
 */
 function decrypt(private_key, public_key, nonce, message, checksum) {
@@ -107,7 +112,11 @@ function crypt(private_key, public_key, nonce, message, checksum) {
 }
 
 /** This method does not use a checksum, the returned data must be validated some other way.
-    @arg {string|Buffer} ciphertext - binary format
+
+    @arg {string|Buffer} message - ciphertext binary format
+    @arg {string<utf8>|Buffer} key - 256bit
+    @arg {string<utf8>|Buffer} iv - 128bit
+
     @return {Buffer}
 */
 function cryptoJsDecrypt(message, key, iv) {
@@ -120,8 +129,11 @@ function cryptoJsDecrypt(message, key, iv) {
 }
 
 /** This method does not use a checksum, the returned data must be validated some other way.
-    @arg {string|Buffer} plaintext - binary format
-    @return {Buffer} binary
+    @arg {string|Buffer} message - plaintext binary format
+    @arg {string<utf8>|Buffer} key - 256bit
+    @arg {string<utf8>|Buffer} iv - 128bit
+
+    @return {Buffer}
 */
 function cryptoJsEncrypt(message, key, iv) {
     assert(message, "Missing plain text")

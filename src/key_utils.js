@@ -7,6 +7,9 @@ module.exports = {
     addEntropy
 }
 
+let entropyPos = 0, entropyCount = 0
+const externalEntropyArray = randomBytes(101)
+
 /**
     @return a random buffer obtained from the secure random number generator.  Additional entropy is used.
 
@@ -24,9 +27,6 @@ function random32ByteBuffer({cpuEntropyBits = 128} = {}) {
     hash_array.push(browserEntropy())
     return hash.sha256(Buffer.concat(hash_array))
 }
-
-let entropyPos = 0, entropyCount = 0
-const externalEntropyArray = randomBytes(101)
 
 /**
     Add entropy via external events (like mouse events).  This may be called many times while the amount of data saved is limited.  Data is retained in RAM for the life of this module.

@@ -94,21 +94,16 @@ function PrivateKey(d) {
     //     return hash.sha512(S);
     // }
 
-    /** @throws {Error} - overflow of the key could not be derived */
-    function child( offset ) {
-        offset = Buffer.concat([ toPublic().toBuffer(), offset ])
-        offset = hash.sha256( offset )
-        let c = BigInteger.fromBuffer(offset)
+    /**
+      @arg {string} role or smart contract permission name.
 
-        if (c.compareTo(n) >= 0)
-            throw new Error("Child offset went out of bounds, try again")
-
-        let derived = d.add(c)//.mod(n)
-
-        if( derived.signum() === 0 )
-            throw new Error("Child offset derived to an invalid key, try again")
-
-        return PrivateKey( derived )
+      @example masterPrivate.child('owner').child('active')
+      @example masterPrivate.child('mycontract').child('myperm')
+    */
+    const getChildKey = (role) => {
+      console.error('WARNING: getChildKey called, this needs testing against eosd');
+      return createHash('sha256')
+      .update(toBuffer()).update(role).digest()
     }
 
     function toHex() {
@@ -122,7 +117,7 @@ function PrivateKey(d) {
         toBuffer,
         toString: toWif,
         getSharedSecret,
-        child
+        getChildKey
     }
 }
 
