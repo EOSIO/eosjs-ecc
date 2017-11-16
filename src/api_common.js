@@ -43,7 +43,7 @@ const ecc = {
 
         @example ecc.privateToPublic(wif) === pubkey
     */
-    privateToPublic: wif => PrivateKey.fromWif(wif).toPublic().toString(),
+    privateToPublic: wif => PrivateKey(wif).toPublic().toString(),
 
     /**
         @arg {pubkey} pubkey - like EOSKey..
