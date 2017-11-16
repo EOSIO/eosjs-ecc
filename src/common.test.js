@@ -23,11 +23,11 @@ describe('Common API', () => {
   it('isValidPublic', () => {
     keys = [
       [true, 'EOS859gxfnXyUriMgUeThh1fWv3oqcpLFyHa3TfFYC4PK2HqhToVM'],
-      [false, 'MOS859gxfnXyUriMgUeThh1fWv3oqcpLFyHa3TfFYC4PK2HqhToVM'],
-      [false, 'EOS859gxfnXyUriMgUeThh1fWv3oqcpLFyHa3TfFYC4PK2HqhToVm'],
+      [false, 'MMM859gxfnXyUriMgUeThh1fWv3oqcpLFyHa3TfFYC4PK2HqhToVM'],
+      [false, 'EOS859gxfnXyUriMgUeThh1fWv3oqcpLFyHa3TfFYC4PK2HqhTo'],
     ]
     for(const key of keys) {
-      assert.equal(key[0], ecc.isValidPublic(key[1]) === true)
+      assert.equal(key[0], ecc.isValidPublic(key[1]), key[1])
     }
   })
 
@@ -37,7 +37,7 @@ describe('Common API', () => {
       [false, '5KYZdUEo39z3FPrtuX2QbbwGnNP5zTd7yyr2SC1j299sBCnWjsm'],
     ]
     for(const key of keys) {
-      assert.equal(key[0], ecc.isValidPrivate(key[1]) === true)
+      assert.equal(key[0], ecc.isValidPrivate(key[1]), key[1])
     }
   })
 

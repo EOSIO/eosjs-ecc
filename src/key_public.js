@@ -15,7 +15,9 @@ module.exports = PublicKey
 function PublicKey(Q) {
 
     if(typeof Q === 'string') {
-        return PublicKey.fromString(Q)
+        const publicKey = PublicKey.fromString(Q)
+        assert(publicKey != null, 'Invalid public key')
+        return publicKey
     } else if(Buffer.isBuffer(Q)) {
         return PublicKey.fromBuffer(Q)
     } else if(typeof Q === 'object' && Q.Q) {

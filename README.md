@@ -75,7 +75,6 @@ Returns **[pubkey](#pubkey)**
 **Parameters**
 
 -   `pubkey` **[pubkey](#pubkey)** like EOSKey..
--   `addressPrefix` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** like EOS (optional, default `config.address_prefix`)
 
 **Examples**
 
@@ -83,7 +82,7 @@ Returns **[pubkey](#pubkey)**
 ecc.isValidPublic(pubkey) === true
 ```
 
-Returns **([boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean) \| [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String))** true or error string
+Returns **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** valid
 
 ### isValidPrivate
 
@@ -97,7 +96,7 @@ Returns **([boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Ref
 ecc.isValidPrivate(wif) === true
 ```
 
-Returns **([boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean) \| [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String))** true or error string
+Returns **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** valid
 
 ### sign
 
