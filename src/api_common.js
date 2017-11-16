@@ -47,34 +47,19 @@ const ecc = {
 
     /**
         @arg {pubkey} pubkey - like EOSKey..
-        @arg {string} [addressPrefix = config.address_prefix] - like EOS
-        @return {boolean|string} true or error string
+        @return {boolean} valid
 
         @example ecc.isValidPublic(pubkey) === true
     */
-    isValidPublic: (pubkey, addressPrefix) => {
-        try {
-            PublicKey.fromStringOrThrow(pubkey, addressPrefix)
-            return true
-        } catch(error) {
-            return error
-        }
-    },
+    isValidPublic: (pubkey) => PublicKey.isValid(pubkey),
 
     /**
         @arg {wif} wif
-        @return {boolean|string} true or error string
+        @return {boolean} valid
 
         @example ecc.isValidPrivate(wif) === true
     */
-    isValidPrivate: (wif) => {
-        try {
-            PrivateKey.fromWif(wif)
-            return true
-        } catch(error) {
-            return error
-        }
-    },
+    isValidPrivate: (wif) => PrivateKey.isValid(wif),
 
     /**
         Create a signature using data or a hash.

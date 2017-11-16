@@ -95,6 +95,15 @@ function PublicKey(Q) {
     }
 }
 
+PublicKey.isValid = function(text) {
+    try {
+        PublicKey(text)
+        return true
+    } catch(e) {
+        return false
+    }
+}
+
 PublicKey.fromBinary = function(bin) {
     return PublicKey.fromBuffer(new Buffer(bin, 'binary'));
 }

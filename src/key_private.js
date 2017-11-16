@@ -162,6 +162,15 @@ PrivateKey.isWif = function(text) {
     }
 }
 
+PrivateKey.isValid = function(text) {
+    try {
+        PrivateKey(text)
+        return true
+    } catch(e) {
+        return false
+    }
+}
+
 /**
     @throws {AssertError|Error} parsing key
     @return {string} Wallet Import Format (still a secret, Not encrypted)
