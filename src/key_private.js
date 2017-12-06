@@ -162,9 +162,13 @@ PrivateKey.isWif = function(text) {
     }
 }
 
-PrivateKey.isValid = function(text) {
+/**
+  @arg {wif|Buffer|PrivateKey} key
+  @return {boolean} true if key is convertable to a private key object.
+*/
+PrivateKey.isValid = function(key) {
     try {
-        PrivateKey(text)
+        PrivateKey(key)
         return true
     } catch(e) {
         return false
