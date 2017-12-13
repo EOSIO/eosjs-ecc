@@ -24,7 +24,7 @@ function PublicKey(Q) {
       return PublicKey(Q.Q)
     }
 
-    if(typeof Q !== 'object' || !Q.compressed) {
+    if(typeof Q !== 'object' || typeof Q.compressed !== 'boolean') {
         throw new TypeError('Invalid public key')
     }
 
@@ -55,7 +55,10 @@ function PublicKey(Q) {
         return PublicKey.fromPoint(point);
     }
 
+    /** @deprecated */
     function child( offset ) {
+        console.error('Deprecated warning: PublicKey.child')
+
         assert(Buffer.isBuffer(offset), "Buffer required: offset")
         assert.equal(offset.length, 32, "offset length")
 

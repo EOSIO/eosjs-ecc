@@ -70,14 +70,18 @@ function PrivateKey(d) {
         return d.toBuffer(32);
     }
 
-    /** ECIES */
+    /**
+      ECIES
+      @arg {string|Object} pubkey wif, PublicKey object
+      @return {Buffer} 64 byte shared secret
+    */
     function getSharedSecret(public_key) {
-        public_key = toPublic(public_key)
+        public_key = PublicKey(public_key)
         let KB = public_key.toUncompressed().toBuffer()
         let KBP = Point.fromAffine(
-            secp256k1,
-            BigInteger.fromBuffer( KB.slice( 1,33 )), // x
-            BigInteger.fromBuffer( KB.slice( 33,65 )) // y
+          secp256k1,
+          BigInteger.fromBuffer( KB.slice( 1,33 )), // x
+          BigInteger.fromBuffer( KB.slice( 33,65 )) // y
         )
         let r = toBuffer()
         let P = KBP.multiply(BigInteger.fromBuffer(r))
@@ -86,9 +90,12 @@ function PrivateKey(d) {
         return hash.sha512(S)
     }
 
-    // /** ECIES (does not always match the Point.fromAffine version above) */
-    // getSharedSecret(public_key){
-    //     public_key = toPublic(public_key)
+    // /** ECIES TODO unit test
+    //   @arg {string|Object} pubkey wif, PublicKey object
+    //   @return {Buffer} 64 byte shared secret
+    // */
+    // function getSharedSecret(public_key) {
+    //     public_key = PublicKey(public_key).toUncompressed()
     //     var P = public_key.Q.multiply( d );
     //     var S = P.affineX.toBuffer({size: 32});
     //     // ECIES, adds an extra sha512
@@ -103,7 +110,7 @@ function PrivateKey(d) {
       @example activePrivate.getChildKey('mycontract').getChildKey('myperm')
     */
     function getChildKey(name) {
-      console.error('WARNING: getChildKey untested against eosd');
+      // console.error('WARNING: getChildKey untested against eosd'); // no eosd impl yet
       const index = createHash('sha256').update(toBuffer()).update(name).digest()
       return PrivateKey(index)
     }
@@ -201,6 +208,3 @@ PrivateKey.fromWif = function(_private_wif) {
 PrivateKey.randomKey = function(cpuEntropyBits) {
     return PrivateKey.fromBuffer(keyUtils.random32ByteBuffer({cpuEntropyBits}));
 }
-
-const toPublic = data => data == null ? data :
-    data.Q ? data : PublicKey.fromStringOrThrow(data)
