@@ -1,6 +1,6 @@
 
 /**
-  Convert a asynchronous function into a asynchronous one (via setTimeout)
+  Convert a synchronous function into a asynchronous one (via setTimeout)
   wrapping it in a promise.  This does not expect the function to have a
   callback paramter.
 
