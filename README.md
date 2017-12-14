@@ -25,6 +25,20 @@ Type: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference
 
 ## ecc
 
+### initialize
+
+Initialize by running some self-checking code.  This should take a
+second to gather additional CPU entropy used during private key
+generation.
+
+Initialization happens once even if called multiple times.
+
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)** 
+
+### unsafeRandomKey
+
+Returns **PrivateKey** for testing, does not require initialize().
+
 ### randomKey
 
 **Parameters**

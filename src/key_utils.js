@@ -1,25 +1,43 @@
-
+const assert = require('assert')
 const randomBytes = require('randombytes');
+
 const hash = require('./hash');
 
 module.exports = {
     random32ByteBuffer,
-    addEntropy
+    addEntropy,
+    cpuEntropy,
+    entropyCount: () => entropyCount
 }
 
 let entropyPos = 0, entropyCount = 0
+
 const externalEntropyArray = randomBytes(101)
 
-/**
-    @return a random buffer obtained from the secure random number generator.  Additional entropy is used.
 
+/**
     Additional forms of entropy are used.  A week random number generator can run out of entropy.  This should ensure even the worst random number implementation will be reasonably safe.
+
+    @arg {number} [cpuEntropyBits = 0] generate entropy on the fly.  This is
+    not required, entropy can be added in advanced via addEntropy or initialize().
+
+    @arg {boolean} [safe = true] false for testing, otherwise this will be
+    true to ensure initialize() was called.
+
+    @return a random buffer obtained from the secure random number generator.  Additional entropy is used.
 */
-function random32ByteBuffer({cpuEntropyBits = 128} = {}) {
-    if(entropyCount > 0) {
-        console.log(`Additional private key entropy: ${entropyCount} events`)
-        entropyCount = 0
+function random32ByteBuffer({cpuEntropyBits = 0, safe = true} = {}) {
+    assert(typeof cpuEntropyBits, 'number', 'cpuEntropyBits')
+    assert(typeof safe, 'boolean', 'boolean')
+
+    if(safe) {
+      assert(entropyCount >= 128, 'Call initialize() to add entropy')
     }
+
+    // if(entropyCount > 0) {
+    //     console.log(`Additional private key entropy: ${entropyCount} events`)
+    // }
+
     const hash_array = []
     hash_array.push(randomBytes(32))
     hash_array.push(Buffer.from(cpuEntropy(cpuEntropyBits)))
@@ -29,7 +47,9 @@ function random32ByteBuffer({cpuEntropyBits = 128} = {}) {
 }
 
 /**
-    Add entropy via external events (like mouse events).  This may be called many times while the amount of data saved is limited.  Data is retained in RAM for the life of this module.
+    Adds entropy.  This may be called many times while the amount of data saved
+    is accumulatively reduced to 101 integers.  Data is retained in RAM for the
+    life of this module.
 
     @example React <code>
     componentDidMount() {
@@ -47,6 +67,8 @@ function random32ByteBuffer({cpuEntropyBits = 128} = {}) {
     </code>
 */
 function addEntropy(...ints) {
+    assert.equal(externalEntropyArray.length, 101, 'externalEntropyArray')
+
     entropyCount += ints.length
     for(const i of ints) {
         const pos = entropyPos++ % 101
@@ -57,14 +79,15 @@ function addEntropy(...ints) {
 }
 
 /**
-    This runs in just under 1 second and ensures a minimum of 512 bits of entropy are gathered.
+    This runs in just under 1 second and ensures a minimum of cpuEntropyBits
+    bits of entropy are gathered.
 
+    Based on more-entropy. @see https://github.com/keybase/more-entropy/blob/master/src/generator.iced
+
+    @arg {number} [cpuEntropyBits = 128]
     @return {array} counts gathered by measuring variations in the CPU speed during floating point operations.
-
-    Based on more-entropy.
-    @see https://github.com/keybase/more-entropy/blob/master/src/generator.iced
 */
-function cpuEntropy(cpuEntropyBits) {
+function cpuEntropy(cpuEntropyBits = 128) {
     let collected = []
     let lastCount = null
     let lowEntropySamples = 0
@@ -97,6 +120,7 @@ function cpuEntropy(cpuEntropyBits) {
 }
 
 /**
+    @private
     Count while performing floating point operations during a fixed time
     (7 ms for example).  Using a fixed time makes this algorithm
     predictable in runtime.
@@ -114,6 +138,7 @@ function floatingPointCount() {
 const log2 = x => Math.log(x) / Math.LN2
 
 /**
+    @private
     Attempt to gather and hash information from the browser's window, history, and supported mime types.  For non-browser environments this simply includes secure random data.  In any event, the information is re-hashed in a loop for 25 milliseconds seconds.
 
     @return {Buffer} 32 bytes

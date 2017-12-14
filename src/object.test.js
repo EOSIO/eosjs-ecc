@@ -1,14 +1,14 @@
 
 /* eslint-env mocha */
-assert = require('assert')
+const assert = require('assert')
 
-ecc = require('.')
+const ecc = require('.')
 
 const {PublicKey, PrivateKey} = ecc
 
 describe('Object API', () => {
   it('PrivateKey constructor', () => {
-    privateKey = PrivateKey.randomKey({cpuEntropyBits: 0})
+    const privateKey = PrivateKey.randomKey({cpuEntropyBits: 0})
     assert(privateKey.toWif() === PrivateKey(privateKey.toWif()).toWif())
     assert(privateKey.toWif() === PrivateKey(privateKey.toBuffer()).toWif())
     assert(privateKey.toWif() === PrivateKey(privateKey).toWif())
@@ -16,7 +16,7 @@ describe('Object API', () => {
   })
 
   it('PublicKey constructor', () => {
-    publicKey = PrivateKey.randomKey({cpuEntropyBits: 0}).toPublic()
+    const publicKey = PrivateKey.randomKey({cpuEntropyBits: 0}).toPublic()
     assert(publicKey.toString() === PublicKey(publicKey.toString()).toString())
     assert(publicKey.toString() === PublicKey(publicKey.toBuffer()).toString())
     assert(publicKey.toString() === PublicKey(publicKey).toString())

@@ -5,7 +5,7 @@
   "keywords": "ECC, Private Key, Public Key, Signature, AES, Encryption, Decryption",
   "main": "lib/index.js",
   "scripts": {
-    "test": "mocha src/*.test.js",
+    "test": "mocha --use_strict src/*.test.js",
     "coverage": "istanbul cover _mocha -- -R spec src/*.test.js",
     "coveralls": "npm run coverage && cat ./coverage/lcov.info | ./node_modules/.bin/coveralls",
     "prepublish": "npm run build_lib && npm run docs",
@@ -13,7 +13,8 @@
     "documentation": "node_modules/documentation/bin/documentation.js",
     "build": "npm run docs && npm run build_lib && npm run build_browser",
     "build_lib": "node_modules/babel-cli/bin/babel.js src --out-dir lib",
-    "build_browser": "mkdir -p dist && browserify -o dist/eosjs-ecc.js -s eosjs_ecc src/index.js && sha256sum dist/eosjs-ecc.js"
+    "build_browser": "mkdir -p dist && browserify -o dist/eosjs-ecc.js -s eosjs_ecc src/index.js && sha256sum dist/eosjs-ecc.js",
+    "build_browser_test": "mkdir -p dist && browserify -o dist/eosjs-ecc-test.js src/*.test.js"
   },
   "repository": {
     "type": "git",

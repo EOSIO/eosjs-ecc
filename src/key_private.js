@@ -4,10 +4,12 @@ const secp256k1 = ecurve.getCurveByName('secp256k1');
 const BigInteger = require('bigi');
 const base58 = require('bs58');
 const assert = require('assert');
+
 const hash = require('./hash');
 const PublicKey = require('./key_public');
 const keyUtils = require('./key_utils');
 const createHash = require('create-hash')
+const promiseAsync = require('./promise-async')
 
 const G = secp256k1.G
 const n = secp256k1.n
@@ -205,6 +207,82 @@ PrivateKey.fromWif = function(_private_wif) {
     return PrivateKey.fromBuffer(private_key);
 }
 
-PrivateKey.randomKey = function(cpuEntropyBits) {
-    return PrivateKey.fromBuffer(keyUtils.random32ByteBuffer({cpuEntropyBits}));
+/**
+  Create a new random private key.
+
+  Call initialize() first to run some self-checking code and gather some CPU
+  entropy.
+
+  @arg {number} [cpuEntropyBits = 0] - additional CPU entropy (in addition
+  to initialize())
+
+  @return {PrivateKey} - random private key
+*/
+PrivateKey.randomKey = function(cpuEntropyBits = 0) {
+  assert(unitTested, 'Call initialize() before creating a safe private key')
+  return PrivateKey.fromBuffer(keyUtils.random32ByteBuffer({cpuEntropyBits}));
 }
+
+/**
+  @return {PrivateKey} for testing, does not require initialize().
+*/
+PrivateKey.unsafeRandomKey = function() {
+  return PrivateKey.fromBuffer(keyUtils.random32ByteBuffer({safe: false}));
+}
+
+
+let initialized = false, unitTested = false
+
+/**
+  Run self-checking code and gather CPU entropy.
+
+  Initialization happens once even if called multiple times.
+
+  @return {Promise}
+*/
+function initialize() {
+  if(initialized) {
+    return
+  }
+
+  unitTest()
+  keyUtils.addEntropy(...keyUtils.cpuEntropy())
+  assert(keyUtils.entropyCount() >= 128, 'insufficient entropy')
+
+  initialized = true
+}
+
+PrivateKey.initialize = promiseAsync(initialize)
+
+/**
+  Unit test basic private and public key functionality.
+
+  @throws {AssertError}
+*/
+function unitTest() {
+  const privateKey = PrivateKey(hash.sha256(''))
+  const wif = privateKey.toWif()
+
+  assert.equal(wif, '5KYZdUEo39z3FPrtuX2QbbwGnNP5zTd7yyr2SC1j299sBCnWjss',
+    'wif comparison test failed on a known private key')
+
+  const pubkey = privateKey.toPublic().toString()
+  assert.equal(pubkey, 'EOS859gxfnXyUriMgUeThh1fWv3oqcpLFyHa3TfFYC4PK2HqhToVM',
+    'pubkey string comparison test failed on a known public key')
+
+  doesNotThrow(() => PrivateKey.fromWif(wif), 'converting known wif from string')
+  doesNotThrow(() => PublicKey.fromString(pubkey), 'converting known public key from string')
+
+  unitTested = true
+}
+
+/** @private */
+const doesNotThrow = (cb, msg) => {
+  try {
+    cb()
+  } catch(error) {
+    error.message = `${msg} ==> ${error.message}`
+    throw error
+  }
+}
+

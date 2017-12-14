@@ -18,6 +18,22 @@ const hash = require("./hash")
 /** @namespace */
 const ecc = {
     /**
+      Initialize by running some self-checking code.  This should take a
+      second to gather additional CPU entropy used during private key
+      generation.
+
+      Initialization happens once even if called multiple times.
+
+      @return {Promise}
+    */
+    initialize: PrivateKey.initialize,
+
+    /**
+      @return {PrivateKey} for testing, does not require initialize().
+    */
+    unsafeRandomKey: () => PrivateKey.unsafeRandomKey().toString(),
+
+    /**
         @arg {number} [cpuEntropyBits = 128] gather additional entropy
             from a CPU mining algorithm.  Set to 0 for testing.
         @return {wif}
@@ -114,7 +130,6 @@ const ecc = {
         @example ecc.sha256('hashme') === '02208b..'
     */
     sha256: (data, encoding = 'hex') => hash.sha256(data, encoding)
-
 }
 
 module.exports = ecc
