@@ -6,10 +6,10 @@ const ecc = require('.')
 const wif = '5KYZdUEo39z3FPrtuX2QbbwGnNP5zTd7yyr2SC1j299sBCnWjss'
 
 describe('Common API', () => {
-  it('unsafeRandomKey', () => {
-    const wif = ecc.unsafeRandomKey()
+  it('unsafeRandomKey', async function() {
+    const wif = await ecc.unsafeRandomKey()
     assert.equal(typeof wif, 'string', 'wif')
-    assert(/^5[HJK]/.test(ecc.unsafeRandomKey()))
+    assert(/^5[HJK]/.test(wif))
   })
 
   it('seedPrivate', () => {
@@ -81,8 +81,9 @@ describe('Common API (initialized)', () => {
   it('randomKey', () => {
     const cpuEntropyBits = 1
     ecc.key_utils.addEntropy(1, 2, 3)
-    const wif = ecc.randomKey(cpuEntropyBits)
-    assert.equal(typeof wif, 'string', 'wif')
-    assert(/^5[HJK]/.test(wif))
+    const wif = ecc.randomKey().then(wif => {
+      assert.equal(typeof wif, 'string', 'wif')
+      assert(/^5[HJK]/.test(wif))
+    })
   })
 })

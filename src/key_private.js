@@ -213,21 +213,24 @@ PrivateKey.fromWif = function(_private_wif) {
   Call initialize() first to run some self-checking code and gather some CPU
   entropy.
 
-  @arg {number} [cpuEntropyBits = 0] - additional CPU entropy (in addition
-  to initialize())
+  @arg {number} [cpuEntropyBits = 0] - additional CPU entropy, this already
+  happens once so it should not be needed again.
 
-  @return {PrivateKey} - random private key
+  @return {Promise<PrivateKey>} - random private key
 */
 PrivateKey.randomKey = function(cpuEntropyBits = 0) {
-  assert(unitTested, 'Call initialize() before creating a safe private key')
-  return PrivateKey.fromBuffer(keyUtils.random32ByteBuffer({cpuEntropyBits}));
+  return PrivateKey.initialize().then(() => (
+    PrivateKey.fromBuffer(keyUtils.random32ByteBuffer({cpuEntropyBits}))
+  ))
 }
 
 /**
-  @return {PrivateKey} for testing, does not require initialize().
+  @return {Promise<PrivateKey>} for testing, does not require initialize().
 */
 PrivateKey.unsafeRandomKey = function() {
-  return PrivateKey.fromBuffer(keyUtils.random32ByteBuffer({safe: false}));
+  return PrivateKey.initialize().then(() => (
+    PrivateKey.fromBuffer(keyUtils.random32ByteBuffer({safe: false}))
+  ))
 }
 
 

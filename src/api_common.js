@@ -29,18 +29,28 @@ const ecc = {
     initialize: PrivateKey.initialize,
 
     /**
-      @return {PrivateKey} for testing, does not require initialize().
+      Does not pause to gather CPU entropy.
+      @return {Promise<PrivateKey>} test key
     */
-    unsafeRandomKey: () => PrivateKey.unsafeRandomKey().toString(),
+    unsafeRandomKey: () => (
+      PrivateKey.unsafeRandomKey().then(key => key.toString())
+    ),
 
     /**
-        @arg {number} [cpuEntropyBits = 128] gather additional entropy
-            from a CPU mining algorithm.  Set to 0 for testing.
-        @return {wif}
+        @arg {number} [cpuEntropyBits = 0] gather additional entropy
+        from a CPU mining algorithm.  This will already happen once by
+        default.
 
-        @example ecc.randomKey()
+        @return {Promise<wif>}
+
+        @example
+ecc.randomKey().then(privateKey => {
+  console.log(privateKey.toString())
+})
     */
-    randomKey: (cpuEntropyBits) => PrivateKey.randomKey(cpuEntropyBits).toString(),
+    randomKey: (cpuEntropyBits) => (
+      PrivateKey.randomKey(cpuEntropyBits).then(key => key.toString())
+    ),
 
     /**
 

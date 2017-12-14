@@ -37,22 +37,27 @@ Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refe
 
 ### unsafeRandomKey
 
-Returns **PrivateKey** for testing, does not require initialize().
+Does not pause to gather CPU entropy.
+
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;PrivateKey>** test key
 
 ### randomKey
 
 **Parameters**
 
 -   `cpuEntropyBits` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** gather additional entropy
-    from a CPU mining algorithm.  Set to 0 for testing. (optional, default `128`)
+    from a CPU mining algorithm.  This will already happen once by
+    default. (optional, default `0`)
 
 **Examples**
 
 ```javascript
-ecc.randomKey()
+ecc.randomKey().then(privateKey => {
+console.log(privateKey.toString())
+})
 ```
 
-Returns **[wif](#wif)** 
+Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[wif](#wif)>** 
 
 ### seedPrivate
 
@@ -194,8 +199,8 @@ Type: [string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference
 let {PrivateKey, PublicKey, Signature, Aes, key_utils, config} = require('eosjs-ecc')
 
 // Create a new random private key
-privateWif = PrivateKey.randomKey().toWif()
-
+let privateWif
+PrivateKey.randomKey().then(privateKey => privateWif = privateKey.toWif())
 
 // Convert to a public key
 pubkey = PrivateKey.fromWif(privateWif).toPublic().toString()
@@ -225,9 +230,11 @@ npm run build
 
 ```js
 var ecc = eosjs_ecc
-var privateWif = ecc.randomKey()
-var pubkey = ecc.privateToPublic(privateWif)
-console.log(pubkey)
+
+ecc.randomKey().then(privateWif =>  {
+  var pubkey = ecc.privateToPublic(privateWif)
+  console.log(pubkey)
+})
 ```
 
 # Configure
