@@ -1,10 +1,12 @@
-var ecdsa = require('./ecdsa');
-var hash = require('./hash');
-var curve = require('ecurve').getCurveByName('secp256k1');
-var assert = require('assert');
-var BigInteger = require('bigi');
-var PublicKey = require('./key_public');
-var PrivateKey = require('./key_private');
+const ecdsa = require('./ecdsa');
+const hash = require('./hash');
+const base58 = require('bs58');
+const curve = require('ecurve').getCurveByName('secp256k1');
+const assert = require('assert');
+const BigInteger = require('bigi');
+const PublicKey = require('./key_public');
+const PrivateKey = require('./key_private');
+const config = require('./config');
 
 module.exports = Signature
 
@@ -113,6 +115,19 @@ function Signature(r, s, i) {
         return toBuffer().toString("hex");
     };
 
+    let signatureCache // cache
+
+    function toString(prefix = config.address_prefix) {
+      if(signatureCache) {
+          return prefix + signatureCache
+      }
+      const pub_buf = toBuffer();
+      const checksum = hash.ripemd160(pub_buf);
+      const signatureString = Buffer.concat([pub_buf, checksum.slice(0, 4)]);
+      signatureCache = base58.encode(signatureString)
+      return prefix + signatureCache;
+    }
+
     return {
         r, s, i,
         toBuffer,
@@ -122,6 +137,7 @@ function Signature(r, s, i) {
         recover,
         recoverHash,
         toHex,
+        toString,
 
         /** @deprecated use verify (same arguments and return) */
         verifyBuffer: verify,
@@ -208,13 +224,52 @@ Signature.fromHex = function(hex) {
 };
 
 /**
+    @arg {string} signature - like STMXyz...
+    @arg {string} address_prefix - like STM
+    @return Signature or `null` (if the signature string is invalid)
+*/
+Signature.fromString = function(signature, prefix = config.address_prefix) {
+    try {
+        return Signature.fromStringOrThrow(signature, prefix)
+    } catch (e) {
+        return null;
+    }
+}
+
+/**
+    @arg {string} signature - like EOSKey..
+    @arg {string} address_prefix - like EOS
+    @throws {Error} if public key is invalid
+    @return Signature
+*/
+Signature.fromStringOrThrow = function(signature, prefix = config.address_prefix) {
+    var actualPrefix = signature.slice(0, prefix.length);
+    assert.equal(
+      actualPrefix, prefix,
+      `Expecting key to begin with ${prefix}, instead got ${prefix}`
+    );
+    signature = signature.slice(prefix.length);
+    signature = new Buffer(base58.decode(signature), 'binary');
+    const checksum = signature.slice(-4);
+    signature = signature.slice(0, -4);
+    var new_checksum = hash.ripemd160(signature);
+    new_checksum = new_checksum.slice(0, 4);
+    assert.deepEqual(checksum, new_checksum,
+      'Checksum did not match, ' +
+      `${checksum.toString('hex')} != ${new_checksum.toString('hex')}`
+    );
+    return Signature.fromBuffer(signature);
+}
+
+/**
     @arg {String|Signature} o - hex string
     @return {Signature}
 */
 Signature.from = o => {
     const signature = o ?
         (o.r && o.s && o.i) ? o :
-        typeof o === 'string' ? Signature.fromHex(o) :
+        typeof o === 'string' && o.length === 130 ? Signature.fromHex(o) :
+        typeof o === 'string' && o.length !== 130 ? Signature.fromString(o) :
         Buffer.isBuffer(o) ? Signature.fromBuffer(o) :
         null : o/*null or undefined*/
 

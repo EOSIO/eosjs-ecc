@@ -125,7 +125,6 @@ PublicKey.fromPoint = function(point) {
     @arg {string} public_key - like STMXyz...
     @arg {string} address_prefix - like STM
     @return PublicKey or `null` (if the public_key string is invalid)
-    @deprecated fromPublicKeyString (use fromString instead)
 */
 PublicKey.fromString = function(public_key, address_prefix = config.address_prefix) {
     try {
