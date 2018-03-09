@@ -250,13 +250,13 @@ Signature.fromStringOrThrow = function(signature, prefix = config.address_prefix
     );
     signature = signature.slice(prefix.length);
     signature = new Buffer(base58.decode(signature), 'binary');
-    const checksum = signature.slice(-4);
+    const checksum = signature.slice(-4).toString('hex');
     signature = signature.slice(0, -4);
     var new_checksum = hash.ripemd160(signature);
-    new_checksum = new_checksum.slice(0, 4);
-    assert.deepEqual(checksum, new_checksum,
-      'Checksum did not match, ' +
-      `${checksum.toString('hex')} != ${new_checksum.toString('hex')}`
+    new_checksum = new_checksum.slice(0, 4).toString('hex');
+    assert.equal(
+      checksum, new_checksum,
+      'Checksum did not match, ' + `${checksum} != ${new_checksum}`
     );
     return Signature.fromBuffer(signature);
 }

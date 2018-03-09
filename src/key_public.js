@@ -148,13 +148,13 @@ PublicKey.fromStringOrThrow = function(public_key, address_prefix = config.addre
         public_key = public_key.slice(address_prefix.length);
 
     public_key = new Buffer(base58.decode(public_key), 'binary');
-    var checksum = public_key.slice(-4);
+    var checksum = public_key.slice(-4).toString('hex');
     public_key = public_key.slice(0, -4);
     var new_checksum = hash.ripemd160(public_key);
-    new_checksum = new_checksum.slice(0, 4);
-    assert.deepEqual(checksum, new_checksum,
-      'Checksum did not match, ' +
-      `${checksum.toString('hex')} != ${new_checksum.toString('hex')}`
+    new_checksum = new_checksum.slice(0, 4).toString('hex');
+    assert.equal(
+      checksum, new_checksum,
+      'Checksum did not match, ' + `${checksum} != ${new_checksum}`
     );
     return PublicKey.fromBuffer(public_key);
 }
