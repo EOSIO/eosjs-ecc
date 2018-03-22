@@ -228,9 +228,9 @@ PrivateKey.randomKey = function(cpuEntropyBits = 0) {
   @return {Promise<PrivateKey>} for testing, does not require initialize().
 */
 PrivateKey.unsafeRandomKey = function() {
-  return PrivateKey.initialize().then(() => (
+  return Promise.resolve(
     PrivateKey.fromBuffer(keyUtils.random32ByteBuffer({safe: false}))
-  ))
+  )
 }
 
 
