@@ -4,4 +4,4 @@ npm-debug.log
 coverage
 test
 lib
-dist
+dist/*.js

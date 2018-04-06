@@ -6,15 +6,15 @@
   "main": "lib/index.js",
   "scripts": {
     "test": "mocha --use_strict src/*.test.js",
-    "coverage": "istanbul cover _mocha -- -R spec src/*.test.js",
+    "test_lib": "mocha --use_strict lib/*.test.js",
+    "coverage": "nyc --reporter=html npm test",
     "coveralls": "npm run coverage && cat ./coverage/lcov.info | ./node_modules/.bin/coveralls",
-    "prepublish": "npm run build_lib && npm run docs",
-    "docs": "npm run documentation -- readme src/api_common.js --section \"Common API\" --shallow",
+    "build": "babel src --out-dir lib",
+    "build_browser": "npm run build && mkdir -p dist && browserify -o dist/eosjs-ecc.js -s eosjs_ecc lib/index.js && sha256sum dist/eosjs-ecc.js",
+    "build_browser_test": "npm run build && mkdir -p dist && browserify -o dist/test.js lib/*.test.js",
     "documentation": "node_modules/documentation/bin/documentation.js",
-    "build": "npm run docs && npm run build_lib && npm run build_browser",
-    "build_lib": "node_modules/babel-cli/bin/babel.js src --out-dir lib",
-    "build_browser": "mkdir -p dist && browserify -o dist/eosjs-ecc.js -s eosjs_ecc src/index.js && sha256sum dist/eosjs-ecc.js",
-    "build_browser_test": "mkdir -p dist && browserify -o dist/eosjs-ecc-test.js src/*.test.js"
+    "docs": "npm run documentation -- readme src/api_common.js --section \"Common API\" --shallow",
+    "prepublishOnly": "npm run build_browser && npm run test_lib && npm run docs"
   },
   "repository": {
     "type": "git",
