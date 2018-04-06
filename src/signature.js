@@ -68,13 +68,14 @@ function Signature(r, s, i) {
     /**
         Recover the public key used to create this signature using full data.
         
-        @arg {String|Buffer} data - full data (non-hex)
+        @arg {String|Buffer} data - full data
+        @arg {String} [encoding = 'utf8'] - data encoding (if data is a string)
 
         @return {PublicKey}
     */
-    function recover(data) {
+    function recover(data, encoding = 'utf8') {
         if(typeof data === 'string') {
-            data = Buffer.from(data)
+            data = Buffer.from(data, encoding)
         }
         assert(Buffer.isBuffer(data), 'data is a required String or Buffer')
         data = hash.sha256(data)
@@ -83,12 +84,14 @@ function Signature(r, s, i) {
     };
 
     /**
-        @arg {Buffer|hex} dataSha256 - 32 byte buffer or hex string
+        @arg {String|Buffer} dataSha256 - sha256 hash 32 byte buffer or hex string
+        @arg {String} [encoding = 'hex'] - dataSha256 encoding (if dataSha256 is a string)
+
         @return {PublicKey}
     */
-    function recoverHash(dataSha256) {
+    function recoverHash(dataSha256, encoding = 'hex') {
         if(typeof dataSha256 === 'string') {
-            dataSha256 = Buffer.from(dataSha256, 'hex')
+            dataSha256 = Buffer.from(dataSha256, encoding)
         }
         if(dataSha256.length !== 32 || !Buffer.isBuffer(dataSha256)) {
             throw new Error("dataSha256: 32 byte String or buffer requred")

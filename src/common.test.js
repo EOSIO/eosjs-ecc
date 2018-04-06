@@ -70,7 +70,7 @@ describe('Common API', () => {
       assert(ecc.verify(sig, data, pubkey), 'verify data')
       assert(ecc.verify(sig, dataSha256, pubkey, false), 'verify hash')
       assert.equal(pubkey, ecc.recover(sig, data), 'recover from data')
-      assert.equal(pubkey, ecc.recover(sig, dataSha256, false), 'recover from hash')
+      assert.equal(pubkey, ecc.recoverHash(sig, dataSha256), 'recover from hash')
     }
   })
 })
