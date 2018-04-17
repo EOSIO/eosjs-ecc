@@ -219,7 +219,7 @@ pubkey = PrivateKey.fromWif(privateWif).toPublic().toString()
 git clone https://github.com/EOSIO/eosjs-ecc.git
 cd eosjs-ecc
 npm install
-npm run build
+npm run build_browser
 # builds: ./dist/eosjs-ecc.js
 # Verify release hash
 ```
