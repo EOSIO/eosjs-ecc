@@ -93,12 +93,12 @@ ecc.randomKey().then(privateKey => {
         @arg {string|Buffer} data
         @arg {wif|PrivateKey} privateKey
         @arg {boolean} [hashData = true] - sha256 hash data before signing
-        @return {string} hex signature
+        @return {string} string signature
 
         @example ecc.sign('I am alive', wif)
     */
     sign: (data, privateKey, hashData = true) =>
-        Signature[hashData ? 'sign' : 'signHash'](data, privateKey).toHex(),
+        Signature[hashData ? 'sign' : 'signHash'](data, privateKey).toString(),
 
     /**
         Verify signed data.

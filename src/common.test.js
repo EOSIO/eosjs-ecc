@@ -66,7 +66,6 @@ describe('Common API', () => {
     ]
 
     for(const sig of sigs) {
-      assert.equal(65, Buffer.from(sig, 'hex').length)
       assert(ecc.verify(sig, data, pubkey), 'verify data')
       assert(ecc.verify(sig, dataSha256, pubkey, false), 'verify hash')
       assert.equal(pubkey, ecc.recover(sig, data), 'recover from data')
