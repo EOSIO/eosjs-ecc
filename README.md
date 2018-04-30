@@ -133,7 +133,7 @@ Create a signature using data or a hash.
 ecc.sign('I am alive', wif)
 ```
 
-Returns **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** hex signature
+Returns **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** string signature
 
 ### verify
 
