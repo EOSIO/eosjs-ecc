@@ -121,17 +121,36 @@ ecc.randomKey().then(privateKey => {
     /**
         Recover the public key used to create the signature.
 
-        @arg {String} signature (hex, etc..)
-        @arg {String|Buffer} data
-        @arg {boolean} [hashData = true] - sha256 hash data before recover
+        @arg {String|Buffer} signature (EOSbase58sig.., Hex, Buffer)
+        @arg {String|Buffer} data - full data
+        @arg {String} [encoding = 'utf8'] - data encoding (if data is a string)
+
         @return {pubkey}
 
         @example ecc.recover(signature, 'I am alive') === pubkey
     */
-    recover: (signature, data, hashData = true) => {
+    recover: (signature, data, encoding = 'utf8') => {
+        if(encoding === true) {
+          throw new TypeError('API changed, use recoverHash(signature, data) instead')
+        } else {
+          if(encoding === false) {
+            console.log('Warning: recover hashData parameter was removed');
+          }
+        }
         signature = Signature.from(signature)
-        const recover = signature[hashData ? 'recover' : 'recoverHash']
-        return recover(data).toString()
+        return signature.recover(data, encoding).toString()
+    },
+
+    /**
+        @arg {String|Buffer} signature (EOSbase58sig.., Hex, Buffer)
+        @arg {String|Buffer} dataSha256 - sha256 hash 32 byte buffer or hex string
+        @arg {String} [encoding = 'hex'] - dataSha256 encoding (if dataSha256 is a string)
+
+        @return {PublicKey}
+    */
+    recoverHash: (signature, dataSha256, encoding = 'hex') => {
+        signature = Signature.from(signature)
+        return signature.recoverHash(dataSha256, encoding).toString()
     },
 
     /** @arg {string|Buffer} data
