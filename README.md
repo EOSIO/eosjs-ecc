@@ -53,7 +53,7 @@ Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refe
 
 ```javascript
 ecc.randomKey().then(privateKey => {
-console.log(privateKey.toString())
+    console.log(privateKey) // wif
 })
 ```
 
