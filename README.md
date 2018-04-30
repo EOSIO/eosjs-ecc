@@ -53,8 +53,8 @@ Returns **[Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refe
 
 ```javascript
 ecc.randomKey().then(privateKey => {
-  console.log('Private Key:\t', privateKey) // wif
-  console.log('Public Key:\t', ecc.privateToPublic(privateKey)) // EOSkey...
+console.log('Private Key:\t', privateKey) // wif
+console.log('Public Key:\t', ecc.privateToPublic(privateKey)) // EOSkey...
 })
 ```
 
@@ -126,13 +126,23 @@ Create a signature using data or a hash.
 
 -   `data` **([string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Buffer](https://nodejs.org/api/buffer.html))** 
 -   `privateKey` **([wif](#wif) | PrivateKey)** 
--   `hashData` **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** sha256 hash data before signing (optional, default `true`)
+-   `encoding` **[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** data encoding (if string) (optional, default `'utf8'`)
 
 **Examples**
 
 ```javascript
 ecc.sign('I am alive', wif)
 ```
+
+Returns **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** string signature
+
+### signHash
+
+**Parameters**
+
+-   `dataSha256` **([String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Buffer](https://nodejs.org/api/buffer.html))** sha256 hash 32 byte buffer or string
+-   `privateKey` **([wif](#wif) | PrivateKey)** 
+-   `encoding` **[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** dataSha256 encoding (if string) (optional, default `'hex'`)
 
 Returns **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** string signature
 
@@ -145,6 +155,7 @@ Verify signed data.
 -   `signature` **([string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Buffer](https://nodejs.org/api/buffer.html))** buffer or hex string
 -   `data` **([string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Buffer](https://nodejs.org/api/buffer.html))** 
 -   `pubkey` **([pubkey](#pubkey) | PublicKey)** 
+-   `encoding`   (optional, default `'utf8'`)
 -   `hashData` **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** sha256 hash data before verify (optional, default `true`)
 
 **Examples**

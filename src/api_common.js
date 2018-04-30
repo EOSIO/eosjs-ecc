@@ -93,13 +93,33 @@ ecc.randomKey().then(privateKey => {
 
         @arg {string|Buffer} data
         @arg {wif|PrivateKey} privateKey
-        @arg {boolean} [hashData = true] - sha256 hash data before signing
+        @arg {String} [encoding = 'utf8'] - data encoding (if string)
+
         @return {string} string signature
 
         @example ecc.sign('I am alive', wif)
     */
-    sign: (data, privateKey, hashData = true) =>
-        Signature[hashData ? 'sign' : 'signHash'](data, privateKey).toString(),
+    sign: (data, privateKey, encoding = 'utf8') => {
+        if(encoding === true) {
+          throw new TypeError('API changed, use signHash(..) instead')
+        } else {
+          if(encoding === false) {
+            console.log('Warning: ecc.sign hashData parameter was removed');
+          }
+        }
+        return Signature.sign(data, privateKey, encoding).toString()
+    },
+
+    /**
+        @arg {String|Buffer} dataSha256 - sha256 hash 32 byte buffer or string
+        @arg {wif|PrivateKey} privateKey
+        @arg {String} [encoding = 'hex'] - dataSha256 encoding (if string)
+
+        @return {string} string signature
+    */
+    signHash: (dataSha256, privateKey, encoding = 'hex') => {
+      return Signature.signHash(dataSha256, privateKey, encoding).toString()
+    },
 
     /**
         Verify signed data.
@@ -112,10 +132,21 @@ ecc.randomKey().then(privateKey => {
 
         @example ecc.verify(signature, 'I am alive', pubkey) === true
     */
-    verify: (signature, data, pubkey, hashData = true) => {
+    verify: (signature, data, pubkey, encoding = 'utf8') => {
+        if(encoding === true) {
+          throw new TypeError('API changed, use verifyHash(..) instead')
+        } else {
+          if(encoding === false) {
+            console.log('Warning: ecc.verify hashData parameter was removed');
+          }
+        }
         signature = Signature.from(signature)
-        const verify = signature[hashData ? 'verify' : 'verifyHash']
-        return verify(data, pubkey)
+        return signature.verify(data, pubkey, encoding)
+    },
+
+    verifyHash(signature, dataSha256, pubkey, encoding = 'hex') {
+      signature = Signature.from(signature)
+      return signature.verifyHash(dataSha256, pubkey, encoding)
     },
 
     /**
@@ -134,7 +165,7 @@ ecc.randomKey().then(privateKey => {
           throw new TypeError('API changed, use recoverHash(signature, data) instead')
         } else {
           if(encoding === false) {
-            console.log('Warning: recover hashData parameter was removed');
+            console.log('Warning: ecc.recover hashData parameter was removed');
           }
         }
         signature = Signature.from(signature)

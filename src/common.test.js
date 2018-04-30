@@ -62,12 +62,12 @@ describe('Common API', () => {
 
     const sigs = [
       ecc.sign(data, wif),
-      ecc.sign(dataSha256, wif, false)
+      ecc.signHash(dataSha256, wif)
     ]
 
     for(const sig of sigs) {
       assert(ecc.verify(sig, data, pubkey), 'verify data')
-      assert(ecc.verify(sig, dataSha256, pubkey, false), 'verify hash')
+      assert(ecc.verifyHash(sig, dataSha256, pubkey), 'verify hash')
       assert.equal(pubkey, ecc.recover(sig, data), 'recover from data')
       assert.equal(pubkey, ecc.recoverHash(sig, dataSha256), 'recover from hash')
     }

@@ -18,14 +18,15 @@ function Signature(r, s, i) {
     /**
         Verify signed data.
 
-        @arg {String|Buffer} data - full data (non-hex)
+        @arg {String|Buffer} data - full data
         @arg {pubkey|PublicKey} pubkey - EOSKey..
+        @arg {String} [encoding = 'utf8'] - data encoding (if data is a string)
 
         @return {boolean}
     */
-    function verify(data, pubkey) {
+    function verify(data, pubkey, encoding = 'utf8') {
         if(typeof data === 'string') {
-            data = Buffer.from(data)
+            data = Buffer.from(data, encoding)
         }
         assert(Buffer.isBuffer(data), 'data is a required String or Buffer')
         data = hash.sha256(data)
@@ -35,17 +36,18 @@ function Signature(r, s, i) {
     /**
         Verify a buffer of exactally 32 bytes in size (sha256(text))
 
-        @arg {Buffer|hex} dataSha256 - 32 byte buffer or hex string
-        @arg {String|PublicKey} pubkey
+        @arg {String|Buffer} dataSha256 - 32 byte buffer or string
+        @arg {String|PublicKey} pubkey - EOSKey..
+        @arg {String} [encoding = 'hex'] - dataSha256 encoding (if string)
 
-        @return {Signature}
+        @return {boolean}
     */
-    function verifyHash(dataSha256, pubkey) {
+    function verifyHash(dataSha256, pubkey, encoding = 'hex') {
         if(typeof dataSha256 === 'string') {
-            dataSha256 = Buffer.from(dataSha256, 'hex')
+            dataSha256 = Buffer.from(dataSha256, encoding)
         }
         if(dataSha256.length !== 32 || !Buffer.isBuffer(dataSha256))
-            throw new Error("dataSha256: 32 byte buffer requred")
+            throw new Error("dataSha256: 32 bytes required")
 
         const publicKey = PublicKey(pubkey)
         assert(publicKey, 'pubkey required')
@@ -57,10 +59,15 @@ function Signature(r, s, i) {
         );
     };
 
-    /** Verify hex data by converting to a buffer then hashing.
+    /** @deprecated
+
+        Verify hex data by converting to a buffer then hashing.
+
         @return {boolean}
     */
     function verifyHex(hex, pubkey) {
+        console.log('Deprecated: use verify(data, pubkey, "hex")');
+
         const buf = Buffer.from(hex, 'hex');
         return verify(buf, pubkey);
     };
@@ -69,7 +76,7 @@ function Signature(r, s, i) {
         Recover the public key used to create this signature using full data.
         
         @arg {String|Buffer} data - full data
-        @arg {String} [encoding = 'utf8'] - data encoding (if data is a string)
+        @arg {String} [encoding = 'utf8'] - data encoding (if string)
 
         @return {PublicKey}
     */
@@ -85,7 +92,7 @@ function Signature(r, s, i) {
 
     /**
         @arg {String|Buffer} dataSha256 - sha256 hash 32 byte buffer or hex string
-        @arg {String} [encoding = 'hex'] - dataSha256 encoding (if dataSha256 is a string)
+        @arg {String} [encoding = 'hex'] - dataSha256 encoding (if string)
 
         @return {PublicKey}
     */
@@ -136,35 +143,44 @@ function Signature(r, s, i) {
         toBuffer,
         verify,
         verifyHash,
-        verifyHex,
+        verifyHex,// deprecated
         recover,
         recoverHash,
         toHex,
         toString,
 
         /** @deprecated use verify (same arguments and return) */
-        verifyBuffer: verify,
+        verifyBuffer: (...args) => {
+          console.log('Deprecated: use signature.verify instead (same arguments)');
+          return verify(...args)
+        },
 
         /** @deprecated use recover (same arguments and return) */
-        recoverPublicKey: recover,
+        recoverPublicKey: (...args) => {
+          console.log('Deprecated: use signature.recover instead (same arguments)');
+          return recover(...args)
+        },
 
         /** @deprecated use recoverHash (same arguments and return) */
-        recoverPublicKeyFromBuffer: recoverHash,
-
+        recoverPublicKeyFromBuffer: (...args) => {
+          console.log('Deprecated: use signature.recoverHash instead (same arguments)');
+          return recoverHash(...args)
+        }
     }
 }
 
 /**
     Hash and sign arbitrary data.
 
-    @arg {string|Buffer} data - non-hex data
+    @arg {string|Buffer} data - full data
     @arg {wif|PrivateKey} privateKey
+    @arg {String} [encoding = 'utf8'] - data encoding (if string)
 
     @return {Signature}
 */
-Signature.sign = function(data, privateKey) {
+Signature.sign = function(data, privateKey, encoding = 'utf8') {
     if(typeof data === 'string') {
-        data = Buffer.from(data)
+        data = Buffer.from(data, encoding)
     }
     assert(Buffer.isBuffer(data), 'data is a required String or Buffer')
     data = hash.sha256(data)
@@ -174,14 +190,15 @@ Signature.sign = function(data, privateKey) {
 /**
     Sign a buffer of exactally 32 bytes in size (sha256(text))
 
-    @arg {Buffer|hex} buf - 32 byte buffer or hex string
+    @arg {string|Buffer} dataSha256 - 32 byte buffer or string
     @arg {wif|PrivateKey} privateKey
+    @arg {String} [encoding = 'hex'] - dataSha256 encoding (if string)
 
     @return {Signature}
 */
-Signature.signHash = function(dataSha256, privateKey) {
+Signature.signHash = function(dataSha256, privateKey, encoding = 'hex') {
     if(typeof dataSha256 === 'string') {
-        dataSha256 = Buffer.from(dataSha256, 'hex')
+        dataSha256 = Buffer.from(dataSha256, encoding)
     }
     if( dataSha256.length !== 32 || ! Buffer.isBuffer(dataSha256) )
         throw new Error("dataSha256: 32 byte buffer requred")
