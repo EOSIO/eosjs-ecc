@@ -45,7 +45,8 @@ const ecc = {
 
         @example
 ecc.randomKey().then(privateKey => {
-  console.log(privateKey.toString())
+  console.log('Private Key:\t', privateKey) // wif
+  console.log('Public Key:\t', ecc.privateToPublic(privateKey)) // EOSkey...
 })
     */
     randomKey: (cpuEntropyBits) => (
