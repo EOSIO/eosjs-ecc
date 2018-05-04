@@ -30,7 +30,8 @@ describe('Object API', () => {
     return PrivateKey.randomKey().then(privateKey => {
       const signature = Signature.sign('data', privateKey)
       const sigstr = signature.toString()
-      assert(sigstr.indexOf(config.address_prefix) === 0, 'signature string format')
+      assert.equal(signature.toString(), sigstr, 'cache')
+      assert.equal(Signature.fromString(sigstr).toString(), sigstr, 'fromString')
       assert(sigstr.length > 90, 'signature string is too short')
       assert(Signature.from(sigstr), 'signature from string')
     })

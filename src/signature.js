@@ -6,7 +6,6 @@ const assert = require('assert');
 const BigInteger = require('bigi');
 const PublicKey = require('./key_public');
 const PrivateKey = require('./key_private');
-const config = require('./config');
 
 module.exports = Signature
 
@@ -74,7 +73,7 @@ function Signature(r, s, i) {
 
     /**
         Recover the public key used to create this signature using full data.
-        
+
         @arg {String|Buffer} data - full data
         @arg {String} [encoding = 'utf8'] - data encoding (if string)
 
@@ -125,17 +124,16 @@ function Signature(r, s, i) {
         return toBuffer().toString("hex");
     };
 
-    let signatureCache // cache
+    let signatureCache
 
-    function toString(prefix = config.address_prefix) {
+    function toString() {
       if(signatureCache) {
-          return prefix + signatureCache
+          return signatureCache
       }
       const pub_buf = toBuffer();
-      const checksum = hash.ripemd160(pub_buf);
+      const checksum = hash.ripemd160(Buffer.concat([pub_buf, Buffer.from('K1')]));
       const signatureString = Buffer.concat([pub_buf, checksum.slice(0, 4)]);
-      signatureCache = base58.encode(signatureString)
-      return prefix + signatureCache;
+      return signatureCache = 'SIG_K1_' + base58.encode(signatureString)
     }
 
     return {
@@ -248,7 +246,7 @@ Signature.fromHex = function(hex) {
     @arg {string} address_prefix - like STM
     @return Signature or `null` (if the signature string is invalid)
 */
-Signature.fromString = function(signature, prefix = config.address_prefix) {
+Signature.fromString = function(signature, prefix = 'SIG_K1_') {
     try {
         return Signature.fromStringOrThrow(signature, prefix)
     } catch (e) {
@@ -262,34 +260,39 @@ Signature.fromString = function(signature, prefix = config.address_prefix) {
     @throws {Error} if public key is invalid
     @return Signature
 */
-Signature.fromStringOrThrow = function(signature, prefix = config.address_prefix) {
+Signature.fromStringOrThrow = function(signature) {
+    const prefix = 'SIG_K1_'
     var actualPrefix = signature.slice(0, prefix.length);
     assert.equal(
       actualPrefix, prefix,
-      `Expecting key to begin with ${prefix}, instead got ${prefix}`
+      `Expecting key to begin with ${prefix}`
     );
     signature = signature.slice(prefix.length);
     signature = new Buffer(base58.decode(signature), 'binary');
     const checksum = signature.slice(-4).toString('hex');
     signature = signature.slice(0, -4);
-    var new_checksum = hash.ripemd160(signature);
-    new_checksum = new_checksum.slice(0, 4).toString('hex');
+
+    const prefixTrim = prefix.replace(/^SIG_/, '').replace(/_$/, '')
+    const new_checksum =
+      hash.ripemd160(Buffer.concat([signature, Buffer.from(prefixTrim)]))
+      .slice(0, 4).toString('hex');
+
     assert.equal(
       checksum, new_checksum,
       'Checksum did not match, ' + `${checksum} != ${new_checksum}`
     );
+
     return Signature.fromBuffer(signature);
 }
-
 /**
     @arg {String|Signature} o - hex string
     @return {Signature}
 */
-Signature.from = o => {
+Signature.from = (o) => {
     const signature = o ?
         (o.r && o.s && o.i) ? o :
         typeof o === 'string' && o.length === 130 ? Signature.fromHex(o) :
-        typeof o === 'string' && o.length !== 130 ? Signature.fromString(o) :
+        typeof o === 'string' && o.length !== 130 ? Signature.fromStringOrThrow(o) :
         Buffer.isBuffer(o) ? Signature.fromBuffer(o) :
         null : o/*null or undefined*/
 
