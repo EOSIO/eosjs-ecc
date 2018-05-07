@@ -2,7 +2,6 @@ const ecurve = require('ecurve');
 const Point = ecurve.Point;
 const secp256k1 = ecurve.getCurveByName('secp256k1');
 const BigInteger = require('bigi');
-const base58 = require('bs58');
 const assert = require('assert');
 
 const hash = require('./hash');
@@ -26,9 +25,8 @@ module.exports = PrivateKey;
   @param {BigInteger} d
 */
 function PrivateKey(d) {
-
     if(typeof d === 'string') {
-        return PrivateKey.fromWif(d)
+        return PrivateKey.fromString(d)
     } else if(Buffer.isBuffer(d)) {
         return PrivateKey.fromBuffer(d)
     } else if(typeof d === 'object' && BigInteger.isBigInteger(d.d)) {
@@ -39,6 +37,13 @@ function PrivateKey(d) {
         throw new TypeError('Invalid private key')
     }
 
+    /** @return {string} private key like PVT_K1_base58privatekey.. */
+    function toString() {
+      // todo, use PVT_K1_
+      // return 'PVT_K1_' + keyUtils.checkEncode(toBuffer(), 'K1')
+      return toWif()
+    }
+
     /**
         @return  {wif}
     */
@@ -46,11 +51,7 @@ function PrivateKey(d) {
         var private_key = toBuffer();
         // checksum includes the version
         private_key = Buffer.concat([new Buffer([0x80]), private_key]);
-        var checksum = hash.sha256(private_key);
-        checksum = hash.sha256(checksum);
-        checksum = checksum.slice(0, 4);
-        var private_wif = Buffer.concat([private_key, checksum]);
-        return base58.encode(private_wif);
+        return keyUtils.checkEncode(private_key, 'sha256x2')
     }
 
     let public_key;
@@ -60,8 +61,8 @@ function PrivateKey(d) {
     */
     function toPublic() {
         if (public_key) {
-            // Hundreds of keys can be S L O W in the browser
             // cache
+            // S L O W in the browser
             return public_key
         }
         const Q = secp256k1.G.multiply(d);
@@ -124,12 +125,35 @@ function PrivateKey(d) {
     return {
         d,
         toWif,
+        toString,
         toPublic,
         toBuffer,
-        toString: toWif,
         getSharedSecret,
         getChildKey
     }
+}
+
+/** @private */
+function parseKey(privateStr) {
+  assert(typeof privateStr, 'string', 'privateStr')
+  const match = privateStr.match(/^PVT_([A-Za-z0-9]+)_([A-Za-z0-9]+)$/)
+
+  if(match === null) {
+    // legacy WIF - checksum includes the version
+    const versionKey = keyUtils.checkDecode(privateStr, 'sha256x2')
+    const version = versionKey.readUInt8(0);
+    assert.equal(0x80, version, `Expected version ${0x80}, instead got ${version}`)
+    const privateKey = PrivateKey.fromBuffer(versionKey.slice(1))
+    const keyType = 'K1'
+    const format = 'WIF'
+    return {privateKey, format, keyType}
+  }
+
+  assert(match.length === 3, 'Expecting private key like: PVT_K1_base58privateKey..')
+  const [, keyType, keyString] = match
+  assert.equal(keyType, 'K1', 'K1 private key expected')
+  const privateKey = PrivateKey.fromBuffer(keyUtils.checkDecode(keyString, keyType))
+  return {privateKey, format: 'PVT', keyType}
 }
 
 PrivateKey.fromHex = function(hex) {
@@ -162,9 +186,13 @@ PrivateKey.fromSeed = function(seed) { // generate_private_key
     return PrivateKey.fromBuffer(hash.sha256(seed));
 }
 
+/**
+  @arg {wif} key
+  @return {boolean} true if key is in the Wallet Import Format
+*/
 PrivateKey.isWif = function(text) {
     try {
-        PrivateKey.fromWif(text)
+        assert(parseKey(text).format === 'WIF')
         return true
     } catch(e) {
         return false
@@ -184,27 +212,18 @@ PrivateKey.isValid = function(key) {
     }
 }
 
+/** @deprecated */
+PrivateKey.fromWif = function(str) {
+    console.log('PrivateKey.fromWif is deprecated, please use PrivateKey.fromString');
+    return PrivateKey.fromString(str)
+}
+
 /**
     @throws {AssertError|Error} parsing key
-    @return {string} Wallet Import Format (still a secret, Not encrypted)
+    @arg {string} privateStr Eosio or Wallet Import Format (wif) -- a secret
 */
-PrivateKey.fromWif = function(_private_wif) {
-    var private_wif = new Buffer(base58.decode(_private_wif));
-    var version = private_wif.readUInt8(0);
-    assert.equal(0x80, version, `Expected version ${0x80}, instead got ${version}`);
-    // checksum includes the version
-    var private_key = private_wif.slice(0, -4);
-    var checksum = private_wif.slice(-4);
-    var new_checksum = hash.sha256(private_key);
-    new_checksum = hash.sha256(new_checksum);
-    new_checksum = new_checksum.slice(0, 4);
-    if (checksum.toString() !== new_checksum.toString())
-        throw new Error('Invalid WIF key (checksum miss-match), ' +
-          `${checksum.toString('hex')} != ${new_checksum.toString('hex')}`
-        )
-
-    private_key = private_key.slice(1);
-    return PrivateKey.fromBuffer(private_key);
+PrivateKey.fromString = function(privateStr) {
+    return parseKey(privateStr).privateKey
 }
 
 /**
@@ -263,18 +282,23 @@ PrivateKey.initialize = promiseAsync(initialize)
   @throws {AssertError}
 */
 function unitTest() {
-  const privateKey = PrivateKey(hash.sha256(''))
-  const wif = privateKey.toWif()
+  const pvt = PrivateKey(hash.sha256(''))
 
-  assert.equal(wif, '5KYZdUEo39z3FPrtuX2QbbwGnNP5zTd7yyr2SC1j299sBCnWjss',
-    'wif comparison test failed on a known private key')
+  const pvtError = 'key comparison test failed on a known private key'
+  assert.equal(pvt.toWif(), '5KYZdUEo39z3FPrtuX2QbbwGnNP5zTd7yyr2SC1j299sBCnWjss', pvtError)
+  assert.equal(pvt.toString(), '5KYZdUEo39z3FPrtuX2QbbwGnNP5zTd7yyr2SC1j299sBCnWjss', pvtError)
+  // assert.equal(pvt.toString(), 'PVT_K1_2jH3nnhxhR3zPUcsKaWWZC9ZmZAnKm3GAnFD1xynGJE1Znuvjd', pvtError)
 
-  const pubkey = privateKey.toPublic().toString()
-  assert.equal(pubkey, 'EOS859gxfnXyUriMgUeThh1fWv3oqcpLFyHa3TfFYC4PK2HqhToVM',
-    'pubkey string comparison test failed on a known public key')
+  const pub = pvt.toPublic()
+  const pubError = 'pubkey string comparison test failed on a known public key'
+  assert.equal(pub.toString(), 'EOS859gxfnXyUriMgUeThh1fWv3oqcpLFyHa3TfFYC4PK2HqhToVM', pubError)
+  // assert.equal(pub.toString(), 'PUB_K1_859gxfnXyUriMgUeThh1fWv3oqcpLFyHa3TfFYC4PK2Ht7beeX', pubError)
+  // assert.equal(pub.toStringLegacy(), 'EOS859gxfnXyUriMgUeThh1fWv3oqcpLFyHa3TfFYC4PK2HqhToVM', pubError)
 
-  doesNotThrow(() => PrivateKey.fromWif(wif), 'converting known wif from string')
-  doesNotThrow(() => PublicKey.fromString(pubkey), 'converting known public key from string')
+  doesNotThrow(() => PrivateKey.fromString(pvt.toWif()), 'converting known wif from string')
+  doesNotThrow(() => PrivateKey.fromString(pvt.toString()), 'converting known pvt from string')
+  doesNotThrow(() => PublicKey.fromString(pub.toString()), 'converting known public key from string')
+  // doesNotThrow(() => PublicKey.fromString(pub.toStringLegacy()), 'converting known public key from string')
 
   unitTested = true
 }
@@ -288,4 +312,3 @@ const doesNotThrow = (cb, msg) => {
     throw error
   }
 }
-

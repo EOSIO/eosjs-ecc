@@ -7,22 +7,26 @@ const wif = '5KYZdUEo39z3FPrtuX2QbbwGnNP5zTd7yyr2SC1j299sBCnWjss'
 
 describe('Common API', () => {
   it('unsafeRandomKey', async function() {
-    const wif = await ecc.unsafeRandomKey()
-    assert.equal(typeof wif, 'string', 'wif')
+    const pvt = await ecc.unsafeRandomKey()
+    assert.equal(typeof pvt, 'string', 'pvt')
     assert(/^5[HJK]/.test(wif))
+    // assert(/^PVT_K1_/.test(pvt)) // todo
   })
 
   it('seedPrivate', () => {
     assert.equal(ecc.seedPrivate(''), wif)
+    // assert.equal(ecc.seedPrivate(''), 'PVT_K1_2jH3nnhxhR3zPUcsKaWWZC9ZmZAnKm3GAnFD1xynGJE1Znuvjd')
   })
 
   it('privateToPublic', () => {
+    // const pub = 'PUB_K1_859gxfnXyUriMgUeThh1fWv3oqcpLFyHa3TfFYC4PK2Ht7beeX'
     const pub = 'EOS859gxfnXyUriMgUeThh1fWv3oqcpLFyHa3TfFYC4PK2HqhToVM'
     assert.equal(ecc.privateToPublic(wif), pub)
   })
 
   it('isValidPublic', () => {
     const keys = [
+      [true, 'PUB_K1_859gxfnXyUriMgUeThh1fWv3oqcpLFyHa3TfFYC4PK2Ht7beeX'],
       [true, 'EOS859gxfnXyUriMgUeThh1fWv3oqcpLFyHa3TfFYC4PK2HqhToVM'],
       [false, 'MMM859gxfnXyUriMgUeThh1fWv3oqcpLFyHa3TfFYC4PK2HqhToVM'],
       [false, 'EOS859gxfnXyUriMgUeThh1fWv3oqcpLFyHa3TfFYC4PK2HqhToVm'],
@@ -54,15 +58,15 @@ describe('Common API', () => {
   })
 
   it('signatures', () => {
-    const wif = ecc.seedPrivate('')
-    const pubkey = ecc.privateToPublic(wif)
+    const pvt = ecc.seedPrivate('')
+    const pubkey = ecc.privateToPublic(pvt)
 
     const data = 'hi'
     const dataSha256 = ecc.sha256(data)
 
     const sigs = [
-      ecc.sign(data, wif),
-      ecc.signHash(dataSha256, wif)
+      ecc.sign(data, pvt),
+      ecc.signHash(dataSha256, pvt)
     ]
 
     for(const sig of sigs) {
@@ -80,9 +84,10 @@ describe('Common API (initialized)', () => {
   it('randomKey', () => {
     const cpuEntropyBits = 1
     ecc.key_utils.addEntropy(1, 2, 3)
-    const wif = ecc.randomKey().then(wif => {
-      assert.equal(typeof wif, 'string', 'wif')
+    const pvt = ecc.unsafeRandomKey().then(pvt => {
+      assert.equal(typeof pvt, 'string', 'pvt')
       assert(/^5[HJK]/.test(wif))
+      // assert(/^PVT_K1_/.test(pvt))
     })
   })
 })

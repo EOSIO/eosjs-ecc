@@ -1,10 +1,10 @@
-const BigInteger = require('bigi');
-const ecurve = require('ecurve');
-const secp256k1 = ecurve.getCurveByName('secp256k1');
-const base58 = require('bs58');
-const hash = require('./hash');
-const config = require('./config');
 const assert = require('assert');
+const ecurve = require('ecurve');
+const BigInteger = require('bigi');
+const secp256k1 = ecurve.getCurveByName('secp256k1');
+
+const hash = require('./hash');
+const keyUtils = require('./key_utils');
 
 var G = secp256k1.G
 var n = secp256k1.n
@@ -13,7 +13,6 @@ module.exports = PublicKey
 
 /** @param {ecurve.Point} public key */
 function PublicKey(Q) {
-
     if(typeof Q === 'string') {
         const publicKey = PublicKey.fromString(Q)
         assert(publicKey != null, 'Invalid public key')
@@ -24,29 +23,30 @@ function PublicKey(Q) {
       return PublicKey(Q.Q)
     }
 
-    if(typeof Q !== 'object' || typeof Q.compressed !== 'boolean') {
-        throw new TypeError('Invalid public key')
-    }
+    assert.equal(typeof Q, 'object', 'Invalid public key')
+    assert.equal(typeof Q.compressed, 'boolean', 'Invalid public key')
 
     function toBuffer(compressed = Q.compressed) {
         return Q.getEncoded(compressed);
     }
 
     let pubdata // cache
-    
-    /**
-        Full public key
-        @return {string} EOSKey..
-    */
-    function toString(address_prefix = config.address_prefix) {
-        if(pubdata) {
-            return address_prefix + pubdata
-        }
-        const pub_buf = toBuffer();
-        const checksum = hash.ripemd160(pub_buf);
-        const addy = Buffer.concat([pub_buf, checksum.slice(0, 4)]);
-        pubdata = base58.encode(addy)
-        return address_prefix + pubdata;
+
+    // /**
+    //     @todo secp224r1
+    //     @return {string} PUB_K1_base58pubkey..
+    // */
+    // function toString() {
+    //     if(pubdata) {
+    //         return pubdata
+    //     }
+    //     pubdata = `PUB_K1_` + keyUtils.checkEncode(toBuffer(), 'K1')
+    //     return pubdata;
+    // }
+
+    /** @todo rename to toStringLegacy */
+    function toString() {
+      return 'EOS' + keyUtils.checkEncode(toBuffer())
     }
 
     function toUncompressed() {
@@ -80,12 +80,6 @@ function PublicKey(Q) {
         return PublicKey.fromPoint(Qprime)
     }
 
-    // toByteBuffer() {
-    //     var b = new ByteBuffer(ByteBuffer.DEFAULT_CAPACITY, ByteBuffer.LITTLE_ENDIAN);
-    //     appendByteBuffer(b);
-    //     return b.copy(0, b.offset);
-    // }
-
     function toHex() {
         return toBuffer().toString('hex');
     }
@@ -93,6 +87,7 @@ function PublicKey(Q) {
     return {
         Q,
         toString,
+        // toStringLegacy,
         toUncompressed,
         toBuffer,
         child,
@@ -122,41 +117,36 @@ PublicKey.fromPoint = function(point) {
 }
 
 /**
-    @arg {string} public_key - like STMXyz...
-    @arg {string} address_prefix - like STM
-    @return PublicKey or `null` (if the public_key string is invalid)
+    @arg {string} public_key - like PUB_K1_base58pubkey..
+    @return PublicKey or `null` (invalid)
 */
-PublicKey.fromString = function(public_key, address_prefix = config.address_prefix) {
+PublicKey.fromString = function(public_key) {
     try {
-        return PublicKey.fromStringOrThrow(public_key, address_prefix)
+        return PublicKey.fromStringOrThrow(public_key)
     } catch (e) {
         return null;
     }
 }
 
 /**
-    @arg {string} public_key - like EOSKey..
-    @arg {string} address_prefix - like EOS
+    @arg {string} public_key - like PUB_K1_base58pubkey..
     @throws {Error} if public key is invalid
     @return PublicKey
 */
-PublicKey.fromStringOrThrow = function(public_key, address_prefix = config.address_prefix) {
-    var prefix = public_key.slice(0, address_prefix.length);
-    assert.equal(
-        address_prefix, prefix,
-        `Expecting key to begin with ${address_prefix}, instead got ${prefix}`);
-        public_key = public_key.slice(address_prefix.length);
-
-    public_key = new Buffer(base58.decode(public_key), 'binary');
-    var checksum = public_key.slice(-4).toString('hex');
-    public_key = public_key.slice(0, -4);
-    var new_checksum = hash.ripemd160(public_key);
-    new_checksum = new_checksum.slice(0, 4).toString('hex');
-    assert.equal(
-      checksum, new_checksum,
-      'Checksum did not match, ' + `${checksum} != ${new_checksum}`
-    );
-    return PublicKey.fromBuffer(public_key);
+PublicKey.fromStringOrThrow = function(public_key) {
+    assert(typeof public_key, 'string', 'public_key')
+    const match = public_key.match(/^PUB_([A-Za-z0-9]+)_([A-Za-z0-9]+)$/)
+    if(match === null) {
+      // legacy
+      if(/^EOS/.test(public_key)) {
+        public_key = public_key.substring(3)
+      }
+      return PublicKey.fromBuffer(keyUtils.checkDecode(public_key))
+    }
+    assert(match.length === 3, 'Expecting public key like: PUB_K1_base58pubkey..')
+    const [, keyType, keyString] = match
+    assert.equal(keyType, 'K1', 'K1 private key expected')
+    return PublicKey.fromBuffer(keyUtils.checkDecode(keyString, keyType))
 }
 
 PublicKey.fromHex = function(hex) {

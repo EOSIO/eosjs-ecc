@@ -258,14 +258,3 @@ ecc.randomKey().then(privateWif =>  {
   console.log(pubkey)
 })
 ```
-
-# Configure
-
-```js
-const {config} = require('eosjs-ecc')
-
-// Change the public key address prefix
-// config.address_prefix = 'XXX'
-```
-
-See [Config](./src/config.js)

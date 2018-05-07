@@ -1,9 +1,9 @@
 const ecdsa = require('./ecdsa');
 const hash = require('./hash');
-const base58 = require('bs58');
 const curve = require('ecurve').getCurveByName('secp256k1');
 const assert = require('assert');
 const BigInteger = require('bigi');
+const keyUtils = require('./key_utils');
 const PublicKey = require('./key_public');
 const PrivateKey = require('./key_private');
 
@@ -130,10 +130,8 @@ function Signature(r, s, i) {
       if(signatureCache) {
           return signatureCache
       }
-      const pub_buf = toBuffer();
-      const checksum = hash.ripemd160(Buffer.concat([pub_buf, Buffer.from('K1')]));
-      const signatureString = Buffer.concat([pub_buf, checksum.slice(0, 4)]);
-      return signatureCache = 'SIG_K1_' + base58.encode(signatureString)
+      signatureCache = 'SIG_K1_' + keyUtils.checkEncode(toBuffer(), 'K1')
+      return signatureCache
     }
 
     return {
@@ -242,48 +240,30 @@ Signature.fromHex = function(hex) {
 };
 
 /**
-    @arg {string} signature - like STMXyz...
-    @arg {string} address_prefix - like STM
-    @return Signature or `null` (if the signature string is invalid)
+    @arg {string} signature - like SIG_K1_bas58signature..
+    @return {Signature} or `null` (invalid)
 */
-Signature.fromString = function(signature, prefix = 'SIG_K1_') {
+Signature.fromString = function(signature) {
     try {
-        return Signature.fromStringOrThrow(signature, prefix)
+        return Signature.fromStringOrThrow(signature)
     } catch (e) {
         return null;
     }
 }
 
 /**
-    @arg {string} signature - like EOSKey..
-    @arg {string} address_prefix - like EOS
-    @throws {Error} if public key is invalid
-    @return Signature
+    @arg {string} signature - like SIG_K1_bas58signature..
+    @throws {Error} invalid
+    @return {Signature}
 */
 Signature.fromStringOrThrow = function(signature) {
-    const prefix = 'SIG_K1_'
-    var actualPrefix = signature.slice(0, prefix.length);
-    assert.equal(
-      actualPrefix, prefix,
-      `Expecting key to begin with ${prefix}`
-    );
-    signature = signature.slice(prefix.length);
-    signature = new Buffer(base58.decode(signature), 'binary');
-    const checksum = signature.slice(-4).toString('hex');
-    signature = signature.slice(0, -4);
-
-    const prefixTrim = prefix.replace(/^SIG_/, '').replace(/_$/, '')
-    const new_checksum =
-      hash.ripemd160(Buffer.concat([signature, Buffer.from(prefixTrim)]))
-      .slice(0, 4).toString('hex');
-
-    assert.equal(
-      checksum, new_checksum,
-      'Checksum did not match, ' + `${checksum} != ${new_checksum}`
-    );
-
-    return Signature.fromBuffer(signature);
+    assert(typeof signature, 'string', 'signature')
+    const match = signature.match(/^SIG_([A-Za-z0-9]+)_([A-Za-z0-9]+)$/)
+    assert(match != null && match.length === 3, 'Expecting signature like: SIG_K1_bas58signature..')
+    const [, sigType, sigString] = match
+    return Signature.fromBuffer(keyUtils.checkDecode(sigString, sigType))
 }
+
 /**
     @arg {String|Signature} o - hex string
     @return {Signature}
