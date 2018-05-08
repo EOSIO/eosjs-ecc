@@ -240,7 +240,7 @@ Signature.fromHex = function(hex) {
 };
 
 /**
-    @arg {string} signature - like SIG_K1_bas58signature..
+    @arg {string} signature - like SIG_K1_base58signature..
     @return {Signature} or `null` (invalid)
 */
 Signature.fromString = function(signature) {
@@ -252,14 +252,14 @@ Signature.fromString = function(signature) {
 }
 
 /**
-    @arg {string} signature - like SIG_K1_bas58signature..
+    @arg {string} signature - like SIG_K1_base58signature..
     @throws {Error} invalid
     @return {Signature}
 */
 Signature.fromStringOrThrow = function(signature) {
     assert(typeof signature, 'string', 'signature')
     const match = signature.match(/^SIG_([A-Za-z0-9]+)_([A-Za-z0-9]+)$/)
-    assert(match != null && match.length === 3, 'Expecting signature like: SIG_K1_bas58signature..')
+    assert(match != null && match.length === 3, 'Expecting signature like: SIG_K1_base58signature..')
     const [, keyType, keyString] = match
     assert.equal(keyType, 'K1', 'K1 signature expected')
     return Signature.fromBuffer(keyUtils.checkDecode(keyString, keyType))
