@@ -29,7 +29,14 @@ describe('Object API', () => {
       assert(pvt.toWif() === PrivateKey(pvt.toWif()).toWif())
       assert(pvt.toWif() === PrivateKey(pvt.toBuffer()).toWif())
       assert(pvt.toWif() === PrivateKey(pvt).toWif())
+
+      // 01 suffix indicates a compressed public key (normally this is omitted)
+      const pvtCompressFlag = Buffer.concat([pvt.toBuffer(), Buffer.from('01', 'hex')])
+      assert(pvt.toWif() === PrivateKey(pvtCompressFlag).toWif())
+
       assert.throws(() => PrivateKey(), /Invalid private key/)
+      assert.throws(() => PrivateKey.fromHex('ff'), /Expecting 32 bytes/)
+      assert.throws(() => PrivateKey.fromBuffer('ff'), /Expecting parameter to be a Buffer type/)
       assert.doesNotThrow(() => {
         PrivateKey('PVT_K1_2jH3nnhxhR3zPUcsKaWWZC9ZmZAnKm3GAnFD1xynGJE1Znuvjd')
       })

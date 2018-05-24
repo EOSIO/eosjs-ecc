@@ -164,11 +164,12 @@ PrivateKey.fromBuffer = function(buf) {
     if (!Buffer.isBuffer(buf)) {
         throw new Error("Expecting parameter to be a Buffer type");
     }
-    if (32 !== buf.length) {
-        console.log(`WARN: Expecting 32 bytes, instead got ${buf.length}, stack trace:`, new Error().stack);
+    if(buf.length === 33 && buf[32] === 1) {
+      // remove compression flag
+      buf = buf.slice(0, -1)
     }
-    if (buf.length === 0) {
-        throw new Error("Empty buffer");
+    if (32 !== buf.length) {
+      throw new Error(`Expecting 32 bytes, instead got ${buf.length}`);
     }
     return PrivateKey(BigInteger.fromBuffer(buf));
 }
