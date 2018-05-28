@@ -225,7 +225,7 @@ let privateWif
 PrivateKey.randomKey().then(privateKey => privateWif = privateKey.toWif())
 
 // Convert to a public key
-pubkey = PrivateKey.fromWif(privateWif).toPublic().toString()
+pubkey = PrivateKey.fromString(privateWif).toPublic().toString()
 ```
 
 -   [PrivateKey](./src/key_private.js)
