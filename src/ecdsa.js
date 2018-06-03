@@ -43,6 +43,8 @@ function deterministicGenerateK(curve, hash, d, checkSig, nonce) {
       v = crypto.HmacSHA256(v, k)
     }
 
+    // Step H1/H2a, ignored as tlen === qlen (256 bit)
+    // Step H2b
     v = crypto.HmacSHA256(v, k)
     var T = BigInteger.fromBuffer(v)
 
