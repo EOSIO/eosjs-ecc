@@ -10,10 +10,6 @@ function deterministicGenerateK(curve, hash, d, checkSig, nonce) {
   
   enforceType('Buffer', hash)
   enforceType(BigInteger, d)
-  
-  if (nonce) {
-    hash = crypto.sha256(Buffer.concat([hash, new Buffer(nonce)]))
-  }
 
   // sanity check
   assert.equal(hash.length, 32, 'Hash must be 256 bit')
@@ -40,24 +36,27 @@ function deterministicGenerateK(curve, hash, d, checkSig, nonce) {
   // Step G
   v = crypto.HmacSHA256(v, k)
 
-  // Step H1/H2a, ignored as tlen === qlen (256 bit)
-  // Step H2b
-  v = crypto.HmacSHA256(v, k)
+  var i=0;
+  do {
+    if (i > 0) {
+      k = crypto.HmacSHA256(Buffer.concat([v, new Buffer([0])]), k)
+      v = crypto.HmacSHA256(v, k)
+    }
 
-  var T = BigInteger.fromBuffer(v)
-
-  // Step H3, repeat until T is within the interval [1, n - 1]
-  while ((T.signum() <= 0) || (T.compareTo(curve.n) >= 0) || !checkSig(T)) {
-    k = crypto.HmacSHA256(Buffer.concat([v, new Buffer([0])]), k)
     v = crypto.HmacSHA256(v, k)
+    var T = BigInteger.fromBuffer(v)
 
-    // Step H1/H2a, again, ignored as tlen === qlen (256 bit)
-    // Step H2b again
-    v = crypto.HmacSHA256(v, k)
-    
-    T = BigInteger.fromBuffer(v)
-  }
-
+    // Step H3, repeat until T is within the interval [1, n - 1]
+    while ((T.signum() <= 0) || (T.compareTo(curve.n) >= 0) || !checkSig(T)) {
+      // Step H1/H2a, again, ignored as tlen === qlen (256 bit)
+      // Step H2b again
+      v = crypto.HmacSHA256(v, k)
+      
+      T = BigInteger.fromBuffer(v)
+    }
+    i++;
+  } while (i < nonce)
+  
   return T
 
 }

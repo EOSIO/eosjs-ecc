@@ -207,7 +207,7 @@ Signature.signHash = function(dataSha256, privateKey, encoding = 'hex') {
     nonce = 0;
     e = BigInteger.fromBuffer(dataSha256);
     while (true) {
-      ecsignature = ecdsa.sign(curve, dataSha256, privateKey.d, nonce++);
+      ecsignature = ecdsa.sign(curve, dataSha256, privateKey.d, nonce);
       der = ecsignature.toDER();
       lenR = der[3];
       lenS = der[5 + lenR];
@@ -220,6 +220,7 @@ Signature.signHash = function(dataSha256, privateKey, encoding = 'hex') {
       if (nonce % 10 === 0) {
         console.log("WARN: " + nonce + " attempts to find canonical signature");
       }
+      nonce++;
     }
     return Signature(ecsignature.r, ecsignature.s, i);
 };
