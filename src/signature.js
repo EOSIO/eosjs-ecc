@@ -213,16 +213,17 @@ Signature.signHash = function(dataSha256, privateKey, encoding = 'hex') {
       const ecsignature = ecdsa.sign(curve, dataSha256, privateKey.d, nonce);
 
       // elliptic_openssl.cpp compact_signature private_key::sign_compact
-      // const der = ecsignature.toDER();
-      // const lenR = der[3];
-      // const lenS = der[5 + lenR];
-      // const canonical = lenR === 32 && lenS === 32
+      const der = ecsignature.toDER();
+      const lenR = der[3];
+      const lenS = der[5 + lenR];
+      const canonical = lenR === 32 && lenS === 32
 
       // buf.writeUInt8(i, 0);
       ecsignature.r.toBuffer(32).copy(buf, 1);
       ecsignature.s.toBuffer(32).copy(buf, 32);
+      // const canonical = isCanonical(buf)
 
-      if(!isCanonical(buf)) {
+      if(!canonical) {
         nonce++;
         continue
       }
