@@ -36,8 +36,7 @@ function deterministicGenerateK(curve, hash, d, checkSig, nonce) {
   // Step G
   v = crypto.HmacSHA256(v, k)
 
-  var i=0;
-  do {
+  for (var i=0; i<=nonce; i++) {
     if (i > 0) {
       k = crypto.HmacSHA256(Buffer.concat([v, new Buffer([0])]), k)
       v = crypto.HmacSHA256(v, k)
@@ -56,9 +55,7 @@ function deterministicGenerateK(curve, hash, d, checkSig, nonce) {
       
       T = BigInteger.fromBuffer(v)
     }
-    i++;
-  } while (i < nonce)
-  
+  } 
   return T
 
 }
