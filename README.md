@@ -198,13 +198,18 @@ Returns **PublicKey**
 
 **Parameters**
 
--   `data` **([string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Buffer](https://nodejs.org/api/buffer.html))** 
--   `encoding` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 'hex', 'binary' or 'base64' (optional, default `'hex'`)
+-   `data` **([string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Buffer](https://nodejs.org/api/buffer.html))** always binary, you may need Buffer.from(data, 'hex')
+-   `resultEncoding`   (optional, default `'hex'`)
+-   `encoding` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** result encoding 'hex', 'binary' or 'base64' (optional, default `'hex'`)
 
 **Examples**
 
 ```javascript
 ecc.sha256('hashme') === '02208b..'
+```
+
+```javascript
+ecc.sha256(Buffer.from('02208b', 'hex')) === '29a23..'
 ```
 
 Returns **([string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Buffer](https://nodejs.org/api/buffer.html))** Buffer when encoding is null, or string

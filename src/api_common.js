@@ -183,13 +183,14 @@ ecc.randomKey().then(privateKey => {
         return signature.recoverHash(dataSha256, encoding).toString()
     },
 
-    /** @arg {string|Buffer} data
-        @arg {string} [encoding = 'hex'] - 'hex', 'binary' or 'base64'
+    /** @arg {string|Buffer} data - always binary, you may need Buffer.from(data, 'hex')
+        @arg {string} [encoding = 'hex'] - result encoding 'hex', 'binary' or 'base64'
         @return {string|Buffer} - Buffer when encoding is null, or string
 
         @example ecc.sha256('hashme') === '02208b..'
+        @example ecc.sha256(Buffer.from('02208b', 'hex')) === '29a23..'
     */
-    sha256: (data, encoding = 'hex') => hash.sha256(data, encoding)
+    sha256: (data, resultEncoding = 'hex') => hash.sha256(data, resultEncoding)
 }
 
 module.exports = ecc
