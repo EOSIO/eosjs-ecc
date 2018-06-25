@@ -134,7 +134,7 @@ PublicKey.fromString = function(public_key) {
     @return PublicKey
 */
 PublicKey.fromStringOrThrow = function(public_key) {
-    assert(typeof public_key, 'string', 'public_key')
+    assert.equal(typeof public_key, 'string', 'public_key')
     const match = public_key.match(/^PUB_([A-Za-z0-9]+)_([A-Za-z0-9]+)$/)
     if(match === null) {
       // legacy

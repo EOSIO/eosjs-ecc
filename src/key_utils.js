@@ -30,8 +30,8 @@ const externalEntropyArray = randomBytes(101)
     @return a random buffer obtained from the secure random number generator.  Additional entropy is used.
 */
 function random32ByteBuffer({cpuEntropyBits = 0, safe = true} = {}) {
-    assert(typeof cpuEntropyBits, 'number', 'cpuEntropyBits')
-    assert(typeof safe, 'boolean', 'boolean')
+    assert.equal(typeof cpuEntropyBits, 'number', 'cpuEntropyBits')
+    assert.equal(typeof safe, 'boolean', 'boolean')
 
     if(safe) {
       assert(entropyCount >= 128, 'Call initialize() to add entropy')

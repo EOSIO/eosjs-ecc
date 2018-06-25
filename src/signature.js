@@ -257,7 +257,7 @@ Signature.fromString = function(signature) {
     @return {Signature}
 */
 Signature.fromStringOrThrow = function(signature) {
-    assert(typeof signature, 'string', 'signature')
+    assert.equal(typeof signature, 'string', 'signature')
     const match = signature.match(/^SIG_([A-Za-z0-9]+)_([A-Za-z0-9]+)$/)
     assert(match != null && match.length === 3, 'Expecting signature like: SIG_K1_base58signature..')
     const [, keyType, keyString] = match

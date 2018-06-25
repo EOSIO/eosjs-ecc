@@ -135,7 +135,7 @@ function PrivateKey(d) {
 
 /** @private */
 function parseKey(privateStr) {
-  assert(typeof privateStr, 'string', 'privateStr')
+  assert.equal(typeof privateStr, 'string', 'privateStr')
   const match = privateStr.match(/^PVT_([A-Za-z0-9]+)_([A-Za-z0-9]+)$/)
 
   if(match === null) {
