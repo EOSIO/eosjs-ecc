@@ -4,27 +4,27 @@ const createHmac = require('create-hmac')
 /** @namespace hash */
 
 /** @arg {string|Buffer} data
-    @arg {string} [encoding = null] - 'hex', 'binary' or 'base64'
-    @return {string|Buffer} - Buffer when encoding is null, or string
+    @arg {string} [resultEncoding = null] - 'hex', 'binary' or 'base64'
+    @return {string|Buffer} - Buffer when resultEncoding is null, or string
 */
-function sha1(data, encoding) {
-    return createHash('sha1').update(data).digest(encoding)
+function sha1(data, resultEncoding) {
+    return createHash('sha1').update(data).digest(resultEncoding)
 }
 
 /** @arg {string|Buffer} data
-    @arg {string} [encoding = null] - 'hex', 'binary' or 'base64'
-    @return {string|Buffer} - Buffer when encoding is null, or string
+    @arg {string} [resultEncoding = null] - 'hex', 'binary' or 'base64'
+    @return {string|Buffer} - Buffer when resultEncoding is null, or string
 */
-function sha256(data, encoding) {
-    return createHash('sha256').update(data).digest(encoding)
+function sha256(data, resultEncoding) {
+    return createHash('sha256').update(data).digest(resultEncoding)
 }
 
 /** @arg {string|Buffer} data
-    @arg {string} [encoding = null] - 'hex', 'binary' or 'base64'
-    @return {string|Buffer} - Buffer when encoding is null, or string
+    @arg {string} [resultEncoding = null] - 'hex', 'binary' or 'base64'
+    @return {string|Buffer} - Buffer when resultEncoding is null, or string
 */
-function sha512(data, encoding) {
-    return createHash('sha512').update(data).digest(encoding)
+function sha512(data, resultEncoding) {
+    return createHash('sha512').update(data).digest(resultEncoding)
 }
 
 function HmacSHA256(buffer, secret) {
