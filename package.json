@@ -1,10 +1,14 @@
 {
   "name": "eosjs-ecc",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "description": "Elliptic curve cryptography functions",
   "keywords": "ECC, Private Key, Public Key, Signature, AES, Encryption, Decryption",
   "main": "lib/index.js",
-  "files": ["README.md", "docs", "lib"],
+  "files": [
+    "README.md",
+    "docs",
+    "lib"
+  ],
   "scripts": {
     "test": "mocha --use_strict src/*.test.js",
     "test_lib": "mocha --use_strict lib/*.test.js",
