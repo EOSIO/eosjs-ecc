@@ -4,17 +4,20 @@
   "description": "Elliptic curve cryptography functions",
   "keywords": "ECC, Private Key, Public Key, Signature, AES, Encryption, Decryption",
   "main": "lib/index.js",
+  "files": ["README.md", "docs", "lib"],
   "scripts": {
     "test": "mocha --use_strict src/*.test.js",
     "test_lib": "mocha --use_strict lib/*.test.js",
     "coverage": "nyc --reporter=html npm test",
     "coveralls": "npm run coverage && cat ./coverage/lcov.info | ./node_modules/.bin/coveralls",
-    "build": "babel src --out-dir lib",
-    "build_browser": "npm run build && mkdir -p dist && browserify -o dist/eosjs-ecc.js -s eosjs_ecc lib/index.js && sha256sum dist/eosjs-ecc.js",
-    "build_browser_test": "npm run build && mkdir -p dist && browserify -o dist/test.js lib/*.test.js",
+    "build": "rm -f lib/* && babel src --out-dir lib",
+    "build_browser": "npm run build && mkdir -p lib && browserify -o lib/eosjs-ecc.js -s eosjs_ecc lib/index.js && sha256sum lib/eosjs-ecc.js",
+    "build_browser_test": "npm run build && browserify -o dist/test.js lib/*.test.js",
     "documentation": "node_modules/documentation/bin/documentation.js",
+    "minimize": "uglifyjs lib/eosjs-ecc.js -o lib/eosjs-ecc.min.js --source-map --compress --mangle",
     "docs": "npm run documentation -- readme src/api_common.js --section \"Common API\" --shallow",
-    "prepublishOnly": "npm run build_browser && npm run test_lib && npm run docs"
+    "srisum": "npx srisum lib/eosjs-ecc.*",
+    "prepublishOnly": "npm run build_browser && npm run test_lib && npm run minimize && npm run docs && npm run srisum"
   },
   "repository": {
     "type": "git",
@@ -40,7 +43,8 @@
     "documentation": "^5.3.2",
     "istanbul": "^0.4.5",
     "mocha": "^3.5.3",
-    "nyc": "^11.7.1"
+    "nyc": "^11.7.1",
+    "uglify-js": "^3.4.2"
   },
   "babel": {
     "presets": [
