@@ -202,40 +202,26 @@ Signature.signHash = function(dataSha256, privateKey, encoding = 'hex') {
     privateKey = PrivateKey(privateKey)
     assert(privateKey, 'privateKey required')
 
-    // EOSIO/eos ECC_IMPL secp256k1 (elliptic_secp256k1.cpp)
-    // compact_signature private_key::sign_compact
-
-    let nonce = 0;
-    const buf = new Buffer(65);
-    const e = BigInteger.fromBuffer(dataSha256);
-
+    var der, e, ecsignature, i, lenR, lenS, nonce;
+    i = null;
+    nonce = 1;
+    e = BigInteger.fromBuffer(dataSha256);
     while (true) {
-      const ecsignature = ecdsa.sign(curve, dataSha256, privateKey.d, nonce);
-
-      // elliptic_openssl.cpp compact_signature private_key::sign_compact
-      const der = ecsignature.toDER();
-      const lenR = der[3];
-      const lenS = der[5 + lenR];
-      const canonical = lenR === 32 && lenS === 32
-
-      // buf.writeUInt8(i, 0);
-      ecsignature.r.toBuffer(32).copy(buf, 1);
-      ecsignature.s.toBuffer(32).copy(buf, 32);
-      // const canonical = isCanonical(buf)
-
-      if(!canonical) {
-        nonce++;
-        continue
+      ecsignature = ecdsa.sign(curve, dataSha256, privateKey.d, nonce);
+      der = ecsignature.toDER();
+      lenR = der[3];
+      lenS = der[5 + lenR];
+      if (lenR === 32 && lenS === 32) {
+        i = ecdsa.calcPubKeyRecoveryParam(curve, e, ecsignature, privateKey.toPublic().Q);
+        i += 4;  // compressed
+        i += 27; // compact  //  24 or 27 :( forcing odd-y 2nd key candidate)
+        break;
       }
 
       if (nonce > 5) {
         console.log("WARN: " + nonce + " attempts to find canonical signature");
       }
-
-      let i = ecdsa.calcPubKeyRecoveryParam(curve, e, ecsignature, privateKey.toPublic().Q);
-      i += 4;  // compressed
-      i += 27; // compact
-      return Signature(ecsignature.r, ecsignature.s, i);
+      nonce++;
     }
 };
 

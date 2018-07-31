@@ -5,10 +5,10 @@ const ecc = require('.')
 describe('signature', () => {
 
   it('canonical', function() {
-    const digest = '9d8815193d76ee236ef08e8b9fb675e6def3af8d8209d7665540ab9e17944e19'
+    const digest = '6cb75bc5a46a7fdb64b92efefca01ed7b060ab5e0d625226e8efbc0980c3ddc1'
     const wif = '5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3'
     const actualSig = ecc.signHash(digest, wif)
-    const expectedSig = 'SIG_K1_K3dztmFctY8QPgD6BEnxaV4s1gxyfHPZYTqHx8gH9Hiq2MLvn8Uc4ki6w7C89GVXAQ5JFM37BERe5qJSVHAqSkD8AabtKR'
+    const expectedSig = 'SIG_K1_Kk1yUXAG2Cfo2qvWuJiyvaGdwZBQ1HzSf4EZ9arUTWBL4kTngLM1GSUU59bJUVAqwJ886CNQMcR7mmx323gjQGvhEU8WpX'
     assert.equal(actualSig, expectedSig, 'known signature match')
   })
 
