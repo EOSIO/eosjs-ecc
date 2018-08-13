@@ -44,9 +44,11 @@ function PublicKey(Q) {
     //     return pubdata;
     // }
 
-    /** @todo rename to toStringLegacy */
-    function toString() {
-      return 'EOS' + keyUtils.checkEncode(toBuffer())
+    /** @todo rename to toStringLegacy 
+     * @arg {string} pubkey_prefix - TELOS addition: support for variable public_key prefixes. Defaults to EOS
+    */
+    function toString(pubkey_prefix = 'EOS') {
+      return pubkey_prefix + keyUtils.checkEncode(toBuffer())
     }
 
     function toUncompressed() {
@@ -118,11 +120,12 @@ PublicKey.fromPoint = function(point) {
 
 /**
     @arg {string} public_key - like PUB_K1_base58pubkey..
+    @arg {string} pubkey_prefix - TELOS addition: support for variable public_key prefixes. Defaults to EOS
     @return PublicKey or `null` (invalid)
 */
-PublicKey.fromString = function(public_key) {
+PublicKey.fromString = function(public_key, pubkey_prefix = 'EOS') {
     try {
-        return PublicKey.fromStringOrThrow(public_key)
+        return PublicKey.fromStringOrThrow(public_key, pubkey_prefix)
     } catch (e) {
         return null;
     }
@@ -130,16 +133,19 @@ PublicKey.fromString = function(public_key) {
 
 /**
     @arg {string} public_key - like PUB_K1_base58pubkey..
+    @arg {string} pubkey_prefix - TELOS addition: support for variable public_key prefixes
     @throws {Error} if public key is invalid
     @return PublicKey
 */
-PublicKey.fromStringOrThrow = function(public_key) {
+PublicKey.fromStringOrThrow = function(public_key, pubkey_prefix) {
     assert.equal(typeof public_key, 'string', 'public_key')
     const match = public_key.match(/^PUB_([A-Za-z0-9]+)_([A-Za-z0-9]+)$/)
     if(match === null) {
       // legacy
-      if(/^EOS/.test(public_key)) {
-        public_key = public_key.substring(3)
+      // TELOS addition: support for variable public_key prefixes
+      var prefix_match = new RegExp("^" + pubkey_prefix);
+      if(prefix_match.test(public_key)) {
+        public_key = public_key.substring(pubkey_prefix.length)
       }
       return PublicKey.fromBuffer(keyUtils.checkDecode(public_key))
     }
