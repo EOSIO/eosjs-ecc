@@ -65,7 +65,8 @@ ecc.randomKey().then(privateKey => {
 
     /**
         @arg {wif} wif
-        @arg {pubkey_prefix} - TELOS addition: support for variable public_key prefixes. Defaults to EOS
+        @arg {string} [pubkey_prefix = 'EOS'] - public key prefix
+
         @return {pubkey}
 
         @example ecc.privateToPublic(wif) === pubkey

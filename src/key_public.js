@@ -44,8 +44,8 @@ function PublicKey(Q) {
     //     return pubdata;
     // }
 
-    /** @todo rename to toStringLegacy 
-     * @arg {string} pubkey_prefix - TELOS addition: support for variable public_key prefixes. Defaults to EOS
+    /** @todo rename to toStringLegacy
+     * @arg {string} [pubkey_prefix = 'EOS'] - public key prefix
     */
     function toString(pubkey_prefix = 'EOS') {
       return pubkey_prefix + keyUtils.checkEncode(toBuffer())
@@ -120,7 +120,7 @@ PublicKey.fromPoint = function(point) {
 
 /**
     @arg {string} public_key - like PUB_K1_base58pubkey..
-    @arg {string} pubkey_prefix - TELOS addition: support for variable public_key prefixes. Defaults to EOS
+    @arg {string} [pubkey_prefix = 'EOS'] - public key prefix
     @return PublicKey or `null` (invalid)
 */
 PublicKey.fromString = function(public_key, pubkey_prefix = 'EOS') {
@@ -133,11 +133,13 @@ PublicKey.fromString = function(public_key, pubkey_prefix = 'EOS') {
 
 /**
     @arg {string} public_key - like PUB_K1_base58pubkey..
-    @arg {string} pubkey_prefix - TELOS addition: support for variable public_key prefixes
+    @arg {string} [pubkey_prefix = 'EOS'] - public key prefix
+
     @throws {Error} if public key is invalid
+
     @return PublicKey
 */
-PublicKey.fromStringOrThrow = function(public_key, pubkey_prefix) {
+PublicKey.fromStringOrThrow = function(public_key, pubkey_prefix = 'EOS') {
     assert.equal(typeof public_key, 'string', 'public_key')
     const match = public_key.match(/^PUB_([A-Za-z0-9]+)_([A-Za-z0-9]+)$/)
     if(match === null) {

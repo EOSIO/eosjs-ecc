@@ -15,8 +15,8 @@ const ecc = require('eosjs-ecc')
 
 # Include
 
-* Install with: `npm install eosjs-ecc`
-* Html script tag, see [releases](https://github.com/EOSIO/eosjs-ecc/releases) for the correct **version** and its matching script **integrity** hash. 
+-   Install with: `npm install eosjs-ecc`
+-   Html script tag, see [releases](https://github.com/EOSIO/eosjs-ecc/releases) for the correct **version** and its matching script **integrity** hash. 
 
 ```html
 <html>
@@ -106,6 +106,7 @@ Returns **[wif](#wif)**
 **Parameters**
 
 -   `wif` **[wif](#wif)** 
+-   `pubkey_prefix` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** public key prefix (optional, default `'EOS'`)
 
 **Examples**
 
