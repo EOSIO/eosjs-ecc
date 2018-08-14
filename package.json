@@ -14,14 +14,15 @@
     "test_lib": "mocha --use_strict lib/*.test.js",
     "coverage": "nyc --reporter=html npm test",
     "coveralls": "npm run coverage && cat ./coverage/lcov.info | ./node_modules/.bin/coveralls",
-    "build": "rm -f lib/* && babel src --out-dir lib",
-    "build_browser": "npm run build && mkdir -p lib && browserify -o lib/eosjs-ecc.js -s eosjs_ecc lib/index.js && sha256sum lib/eosjs-ecc.js",
+    "build": "npm run build_lib && npm run build_browser",
+    "build_lib": "rm -f lib/* && babel src --out-dir lib",
+    "build_browser": "mkdir -p lib && browserify -o lib/eosjs-ecc.js -s eosjs_ecc lib/index.js",
     "build_browser_test": "npm run build && browserify -o dist/test.js lib/*.test.js",
     "documentation": "node_modules/documentation/bin/documentation.js",
     "minimize": "uglifyjs lib/eosjs-ecc.js -o lib/eosjs-ecc.min.js --source-map --compress --mangle",
     "docs": "npm run documentation -- readme src/api_common.js --section \"Common API\" --shallow",
     "srisum": "npx srisum lib/eosjs-ecc.*",
-    "prepublishOnly": "npm run build_browser && npm run test_lib && npm run minimize && npm run docs && npm run srisum"
+    "prepublishOnly": "npm run build && npm run test_lib && npm run minimize && npm run docs && npm run srisum"
   },
   "repository": {
     "type": "git",
