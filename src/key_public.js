@@ -12,9 +12,9 @@ var n = secp256k1.n
 module.exports = PublicKey
 
 /** @param {ecurve.Point} public key */
-function PublicKey(Q) {
+function PublicKey(Q,P) {
     if(typeof Q === 'string') {
-        const publicKey = PublicKey.fromString(Q)
+        const publicKey = PublicKey.fromString(Q,P)
         assert(publicKey != null, 'Invalid public key')
         return publicKey
     } else if(Buffer.isBuffer(Q)) {
@@ -97,9 +97,9 @@ function PublicKey(Q) {
     }
 }
 
-PublicKey.isValid = function(text) {
+PublicKey.isValid = function(text,pubkey_prefix='EOS') {
     try {
-        PublicKey(text)
+        PublicKey(text,pubkey_prefix)
         return true
     } catch(e) {
         return false
