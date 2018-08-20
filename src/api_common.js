@@ -75,7 +75,8 @@ ecc.randomKey().then(privateKey => {
 
     /**
         @arg {pubkey} pubkey - like EOSKey..
-        @arg {pubkey_prefix} - Defaults to EOS
+        @arg {string} [pubkey_prefix = 'EOS']
+
         @return {boolean} valid
 
         @example ecc.isValidPublic(pubkey) === true
