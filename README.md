@@ -23,12 +23,12 @@ const ecc = require('eosjs-ecc')
 <head>
   <meta charset="utf-8">
   <!--
-  sha512-zPDtF4/rndRUQzCJBfF+HaPHmDLvJTfIM8Swp8jWvHgvDQBm3OSmhOwL1QdYIatNAKxYgJc1Da/M3g04zd5/uQ== lib/eosjs-ecc.js
-  sha512-XWIwj+P5ClTipsRsO+yz0U8z4Zp9RmGTlJT9+BrgngPFLitzJnaVaNi4Q7nkbHs2W+WeZp0S9EBhZ8KbBC8Yyg== lib/eosjs-ecc.min.js
-  sha512-AauzuZNm0suCDp7awQWKnM6BNGbMl5ij+U0FTaqQbWY6kLXlQMyUZHm17sbbkKvGYYDPC6yJo6bcB6LfBCsHFQ== lib/eosjs-ecc.min.js.map
+  sha512-cL+IQQaQ586s9DrXfGtDheRpj5iDKh2M+xlpfwbhNjRIp4BGQ1fkM/vB4Ta8mc+f51YBW9sJiPcyMDIreJe6gQ== lib/eosjs-ecc.js
+  sha512-dYFDmK/d9r3/NCp6toLtfkwOjSMRBaEzaGAx1tfRItC0nsI0hVLERk05iNBQR7uDNI7ludYhcBI4vUiFHdjsTQ== lib/eosjs-ecc.min.js
+  sha512-eq1SCoSe38uR1UVuQMwR73VgY8qKTBDc87n2nIiC5WLhn1o2y1U6c5wY8lrigVX7INM8fM0PxDlMX5WvpghKig== lib/eosjs-ecc.min.js.map
   -->
-  <script src="https://cdn.jsdelivr.net/npm/eosjs-ecc@4.0.3/lib/eosjs-ecc.min.js"
-    integrity="sha512-XWIwj+P5ClTipsRsO+yz0U8z4Zp9RmGTlJT9+BrgngPFLitzJnaVaNi4Q7nkbHs2W+WeZp0S9EBhZ8KbBC8Yyg=="
+  <script src="https://cdn.jsdelivr.net/npm/eosjs-ecc@4.0.4/lib/eosjs-ecc.min.js"
+    integrity="sha512-dYFDmK/d9r3/NCp6toLtfkwOjSMRBaEzaGAx1tfRItC0nsI0hVLERk05iNBQR7uDNI7ludYhcBI4vUiFHdjsTQ=="
     crossorigin="anonymous"></script>
 
 </head>
@@ -97,7 +97,7 @@ generation.
 
 Initialization happens once even if called multiple times.
 
-Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)** 
+Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)**
 
 ### unsafeRandomKey
 
@@ -122,7 +122,7 @@ console.log('Public Key:\t', ecc.privateToPublic(privateKey)) // EOSkey...
 })
 ```
 
-Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[wif](#wif)>** 
+Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[wif](#wif)>**
 
 ### seedPrivate
 
@@ -138,13 +138,13 @@ Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/
 ecc.seedPrivate('secret') === wif
 ```
 
-Returns **[wif](#wif)** 
+Returns **[wif](#wif)**
 
 ### privateToPublic
 
 #### Parameters
 
--   `wif` **[wif](#wif)** 
+-   `wif` **[wif](#wif)**
 -   `pubkey_prefix` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** public key prefix (optional, default `'EOS'`)
 
 #### Examples
@@ -153,7 +153,7 @@ Returns **[wif](#wif)**
 ecc.privateToPublic(wif) === pubkey
 ```
 
-Returns **[pubkey](#pubkey)** 
+Returns **[pubkey](#pubkey)**
 
 ### isValidPublic
 
@@ -174,7 +174,7 @@ Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/
 
 #### Parameters
 
--   `wif` **[wif](#wif)** 
+-   `wif` **[wif](#wif)**
 
 #### Examples
 
@@ -190,8 +190,8 @@ Create a signature using data or a hash.
 
 #### Parameters
 
--   `data` **([string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Buffer](https://nodejs.org/api/buffer.html))** 
--   `privateKey` **([wif](#wif) | PrivateKey)** 
+-   `data` **([string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Buffer](https://nodejs.org/api/buffer.html))**
+-   `privateKey` **([wif](#wif) | PrivateKey)**
 -   `encoding` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** data encoding (if string) (optional, default `'utf8'`)
 
 #### Examples
@@ -207,7 +207,7 @@ Returns **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/G
 #### Parameters
 
 -   `dataSha256` **([String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Buffer](https://nodejs.org/api/buffer.html))** sha256 hash 32 byte buffer or string
--   `privateKey` **([wif](#wif) | PrivateKey)** 
+-   `privateKey` **([wif](#wif) | PrivateKey)**
 -   `encoding` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** dataSha256 encoding (if string) (optional, default `'hex'`)
 
 Returns **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** string signature
@@ -219,8 +219,8 @@ Verify signed data.
 #### Parameters
 
 -   `signature` **([string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Buffer](https://nodejs.org/api/buffer.html))** buffer or hex string
--   `data` **([string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Buffer](https://nodejs.org/api/buffer.html))** 
--   `pubkey` **([pubkey](#pubkey) | PublicKey)** 
+-   `data` **([string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Buffer](https://nodejs.org/api/buffer.html))**
+-   `pubkey` **([pubkey](#pubkey) | PublicKey)**
 -   `encoding`   (optional, default `'utf8'`)
 -   `hashData` **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** sha256 hash data before verify (optional, default `true`)
 
@@ -230,7 +230,7 @@ Verify signed data.
 ecc.verify(signature, 'I am alive', pubkey) === true
 ```
 
-Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** 
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)**
 
 ### recover
 
@@ -248,7 +248,7 @@ Recover the public key used to create the signature.
 ecc.recover(signature, 'I am alive') === pubkey
 ```
 
-Returns **[pubkey](#pubkey)** 
+Returns **[pubkey](#pubkey)**
 
 ### recoverHash
 
@@ -258,7 +258,7 @@ Returns **[pubkey](#pubkey)**
 -   `dataSha256` **([String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Buffer](https://nodejs.org/api/buffer.html))** sha256 hash 32 byte buffer or hex string
 -   `encoding` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** dataSha256 encoding (if dataSha256 is a string) (optional, default `'hex'`)
 
-Returns **PublicKey** 
+Returns **PublicKey**
 
 ### sha256
 
