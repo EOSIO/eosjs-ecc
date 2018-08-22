@@ -101,12 +101,12 @@ function PublicKey(Q, pubkey_prefix = 'EOS') {
 }
 
 /**
-  @param {string|Buffer|PublicKey|ecurve.Point} public key
+  @param {string|Buffer|PublicKey|ecurve.Point} pubkey - public key
   @param {string} [pubkey_prefix = 'EOS']
 */
-PublicKey.isValid = function(text, pubkey_prefix = 'EOS') {
+PublicKey.isValid = function(pubkey, pubkey_prefix = 'EOS') {
     try {
-        PublicKey(text,pubkey_prefix)
+        PublicKey(pubkey, pubkey_prefix)
         return true
     } catch(e) {
         return false
@@ -151,7 +151,6 @@ PublicKey.fromStringOrThrow = function(public_key, pubkey_prefix = 'EOS') {
     const match = public_key.match(/^PUB_([A-Za-z0-9]+)_([A-Za-z0-9]+)$/)
     if(match === null) {
       // legacy
-      // TELOS addition: support for variable public_key prefixes
       var prefix_match = new RegExp("^" + pubkey_prefix);
       if(prefix_match.test(public_key)) {
         public_key = public_key.substring(pubkey_prefix.length)
