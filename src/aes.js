@@ -69,7 +69,7 @@ function crypt(private_key, public_key, nonce, message, checksum) {
     if (!Buffer.isBuffer(message)) {
         if (typeof message !== 'string')
             throw new TypeError('message should be buffer or string')
-        message = new Buffer(message, 'binary')
+        message = Buffer.from(message, 'binary')
     }
     if (checksum && typeof checksum !== 'number')
         throw new TypeError('checksum should be a number')
@@ -78,7 +78,7 @@ function crypt(private_key, public_key, nonce, message, checksum) {
     let ebuf = new ByteBuffer(ByteBuffer.DEFAULT_CAPACITY, ByteBuffer.LITTLE_ENDIAN)
     ebuf.writeUint64(nonce)
     ebuf.append(S.toString('binary'), 'binary')
-    ebuf = new Buffer(ebuf.copy(0, ebuf.offset).toBinary(), 'binary')
+    ebuf = Buffer.from(ebuf.copy(0, ebuf.offset).toBinary(), 'binary')
     const encryption_key = hash.sha512(ebuf)
 
     // D E B U G
@@ -163,4 +163,4 @@ let unique_nonce_entropy = null
 // for(let i=1; i < 10; i++) key.uniqueNonce()
 
 const toLongObj = o => (o ? Long.isLong(o) ? o : Long.fromString(o) : o)
-const toBinaryBuffer = o => (o ? Buffer.isBuffer(o) ? o : new Buffer(o, 'binary') : o)
+const toBinaryBuffer = o => (o ? Buffer.isBuffer(o) ? o : Buffer.from(o, 'binary') : o)
