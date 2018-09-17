@@ -162,7 +162,7 @@ function browserEntropy() {
         entropyStr += hash.sha256((new Date()).toString())
     }
 
-    const b = new Buffer(entropyStr);
+    const b = Buffer.from(entropyStr);
     entropyStr += b.toString('binary') + " " + (new Date()).toString();
 
     let entropy = entropyStr;
@@ -200,7 +200,7 @@ function checkEncode(keyBuffer, keyType = null) {
 */
 function checkDecode(keyString, keyType = null) {
     assert(keyString != null, 'private key expected')
-    const buffer = new Buffer(base58.decode(keyString))
+    const buffer = Buffer.from(base58.decode(keyString))
     const checksum = buffer.slice(-4)
     const key = buffer.slice(0, -4)
 

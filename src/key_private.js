@@ -50,7 +50,7 @@ function PrivateKey(d) {
     function toWif() {
         var private_key = toBuffer();
         // checksum includes the version
-        private_key = Buffer.concat([new Buffer([0x80]), private_key]);
+        private_key = Buffer.concat([Buffer.from([0x80]), private_key]);
         return keyUtils.checkEncode(private_key, 'sha256x2')
     }
 
@@ -157,7 +157,7 @@ function parseKey(privateStr) {
 }
 
 PrivateKey.fromHex = function(hex) {
-    return PrivateKey.fromBuffer(new Buffer(hex, 'hex'));
+    return PrivateKey.fromBuffer(Buffer.from(hex, 'hex'));
 }
 
 PrivateKey.fromBuffer = function(buf) {

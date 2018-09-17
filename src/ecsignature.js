@@ -11,7 +11,7 @@ function ECSignature(r, s) {
     if (compressed) i += 4
     i += 27
 
-    var buffer = new Buffer(65)
+    var buffer = Buffer.alloc(65)
     buffer.writeUInt8(i, 0)
 
     r.toBuffer(32).copy(buffer, 1)
@@ -37,11 +37,11 @@ function ECSignature(r, s) {
     // SEQUENCE
     sequence.unshift(0x30, sequence.length)
 
-    return new Buffer(sequence)
+    return Buffer.from(sequence)
   }
 
   function toScriptSignature(hashType) {
-    var hashTypeBuffer = new Buffer(1)
+    var hashTypeBuffer = Buffer.alloc(1)
     hashTypeBuffer.writeUInt8(hashType, 0)
 
     return Buffer.concat([toDER(), hashTypeBuffer])

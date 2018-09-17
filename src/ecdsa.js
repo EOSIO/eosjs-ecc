@@ -12,15 +12,15 @@ function deterministicGenerateK(curve, hash, d, checkSig, nonce) {
   enforceType(BigInteger, d)
   
   if (nonce) {
-    hash = crypto.sha256(Buffer.concat([hash, new Buffer(nonce)]))
+    hash = crypto.sha256(Buffer.concat([hash, Buffer.alloc(nonce)]))
   }
 
   // sanity check
   assert.equal(hash.length, 32, 'Hash must be 256 bit')
 
   var x = d.toBuffer(32)
-  var k = new Buffer(32)
-  var v = new Buffer(32)
+  var k = Buffer.alloc(32)
+  var v = Buffer.alloc(32)
 
   // Step B
   v.fill(1)
@@ -29,13 +29,13 @@ function deterministicGenerateK(curve, hash, d, checkSig, nonce) {
   k.fill(0)
 
   // Step D
-  k = crypto.HmacSHA256(Buffer.concat([v, new Buffer([0]), x, hash]), k)
+  k = crypto.HmacSHA256(Buffer.concat([v, Buffer.from([0]), x, hash]), k)
 
   // Step E
   v = crypto.HmacSHA256(v, k)
 
   // Step F
-  k = crypto.HmacSHA256(Buffer.concat([v, new Buffer([1]), x, hash]), k)
+  k = crypto.HmacSHA256(Buffer.concat([v, Buffer.from([1]), x, hash]), k)
 
   // Step G
   v = crypto.HmacSHA256(v, k)
@@ -48,7 +48,7 @@ function deterministicGenerateK(curve, hash, d, checkSig, nonce) {
 
   // Step H3, repeat until T is within the interval [1, n - 1]
   while ((T.signum() <= 0) || (T.compareTo(curve.n) >= 0) || !checkSig(T)) {
-    k = crypto.HmacSHA256(Buffer.concat([v, new Buffer([0])]), k)
+    k = crypto.HmacSHA256(Buffer.concat([v, Buffer.from([0])]), k)
     v = crypto.HmacSHA256(v, k)
 
     // Step H1/H2a, again, ignored as tlen === qlen (256 bit)

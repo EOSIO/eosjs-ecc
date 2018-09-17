@@ -113,7 +113,7 @@ function Signature(r, s, i) {
 
     function toBuffer() {
         var buf;
-        buf = new Buffer(65);
+        buf = Buffer.alloc(65);
         buf.writeUInt8(i, 0);
         r.toBuffer(32).copy(buf, 1);
         s.toBuffer(32).copy(buf, 33);
