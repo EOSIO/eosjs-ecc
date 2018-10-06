@@ -1,7 +1,6 @@
-[![NPM](https://img.shields.io/npm/v/arisenjs-ecc.svg)](https://www.npmjs.org/package/arisenjs-ecc)
-[![Build Status](https://travis-ci.org/ARISENIO/arisenjs-ecc.svg?branch=master)](https://travis-ci.org/ARISENIO/arisenjs-ecc)
-
-# Elliptic curve cryptography functions (ECC)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/ArisenIO/arisen-media/master/repo-headers/arisenjs-ecc.png"/>
+</p>
 
 Private Key, Public Key, Signature, AES, Encryption / Decryption
 
