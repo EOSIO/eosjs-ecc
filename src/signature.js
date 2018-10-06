@@ -18,7 +18,7 @@ function Signature(r, s, i) {
         Verify signed data.
 
         @arg {String|Buffer} data - full data
-        @arg {pubkey|PublicKey} pubkey - EOSKey..
+        @arg {pubkey|PublicKey} pubkey - RSNKey..
         @arg {String} [encoding = 'utf8'] - data encoding (if data is a string)
 
         @return {boolean}
@@ -36,7 +36,7 @@ function Signature(r, s, i) {
         Verify a buffer of exactally 32 bytes in size (sha256(text))
 
         @arg {String|Buffer} dataSha256 - 32 byte buffer or string
-        @arg {String|PublicKey} pubkey - EOSKey..
+        @arg {String|PublicKey} pubkey - RSNKey..
         @arg {String} [encoding = 'hex'] - dataSha256 encoding (if string)
 
         @return {boolean}

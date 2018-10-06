@@ -13,9 +13,9 @@ module.exports = PublicKey
 
 /**
   @param {string|Buffer|PublicKey|ecurve.Point} public key
-  @param {string} [pubkey_prefix = 'EOS']
+  @param {string} [pubkey_prefix = 'RSN']
 */
-function PublicKey(Q, pubkey_prefix = 'EOS') {
+function PublicKey(Q, pubkey_prefix = 'RSN') {
     if(typeof Q === 'string') {
         const publicKey = PublicKey.fromString(Q, pubkey_prefix)
         assert(publicKey != null, 'Invalid public key')
@@ -48,9 +48,9 @@ function PublicKey(Q, pubkey_prefix = 'EOS') {
     // }
 
     /** @todo rename to toStringLegacy
-     * @arg {string} [pubkey_prefix = 'EOS'] - public key prefix
+     * @arg {string} [pubkey_prefix = 'RSN'] - public key prefix
     */
-    function toString(pubkey_prefix = 'EOS') {
+    function toString(pubkey_prefix = 'RSN') {
       return pubkey_prefix + keyUtils.checkEncode(toBuffer())
     }
 
@@ -102,9 +102,9 @@ function PublicKey(Q, pubkey_prefix = 'EOS') {
 
 /**
   @param {string|Buffer|PublicKey|ecurve.Point} pubkey - public key
-  @param {string} [pubkey_prefix = 'EOS']
+  @param {string} [pubkey_prefix = 'RSN']
 */
-PublicKey.isValid = function(pubkey, pubkey_prefix = 'EOS') {
+PublicKey.isValid = function(pubkey, pubkey_prefix = 'RSN') {
     try {
         PublicKey(pubkey, pubkey_prefix)
         return true
@@ -127,10 +127,10 @@ PublicKey.fromPoint = function(point) {
 
 /**
     @arg {string} public_key - like PUB_K1_base58pubkey..
-    @arg {string} [pubkey_prefix = 'EOS'] - public key prefix
+    @arg {string} [pubkey_prefix = 'RSN'] - public key prefix
     @return PublicKey or `null` (invalid)
 */
-PublicKey.fromString = function(public_key, pubkey_prefix = 'EOS') {
+PublicKey.fromString = function(public_key, pubkey_prefix = 'RSN') {
     try {
         return PublicKey.fromStringOrThrow(public_key, pubkey_prefix)
     } catch (e) {
@@ -140,13 +140,13 @@ PublicKey.fromString = function(public_key, pubkey_prefix = 'EOS') {
 
 /**
     @arg {string} public_key - like PUB_K1_base58pubkey..
-    @arg {string} [pubkey_prefix = 'EOS'] - public key prefix
+    @arg {string} [pubkey_prefix = 'RSN'] - public key prefix
 
     @throws {Error} if public key is invalid
 
     @return PublicKey
 */
-PublicKey.fromStringOrThrow = function(public_key, pubkey_prefix = 'EOS') {
+PublicKey.fromStringOrThrow = function(public_key, pubkey_prefix = 'RSN') {
     assert.equal(typeof public_key, 'string', 'public_key')
     const match = public_key.match(/^PUB_([A-Za-z0-9]+)_([A-Za-z0-9]+)$/)
     if(match === null) {
