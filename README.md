@@ -1,5 +1,5 @@
 [![NPM](https://img.shields.io/npm/v/eosjs-ecc-rn.svg)](https://www.npmjs.org/package/eosjs-ecc-rn)
-[![Build Status](https://travis-ci.org/EOSIO/eosjs-ecc-rn.svg?branch=master)](https://travis-ci.org/EOSIO/eosjs-ecc-rn)
+[![Build Status](https://travis-ci.org/Game-X-Coin/eosjs-ecc-rn.svg?branch=master)](https://travis-ci.org/Game-X-Coin/eosjs-ecc-rn)
 
 # eosjs-ecc-rn (ECC React Native)
 
