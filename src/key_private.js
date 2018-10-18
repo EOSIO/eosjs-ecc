@@ -7,7 +7,7 @@ const assert = require('assert');
 const hash = require('./hash');
 const PublicKey = require('./key_public');
 const keyUtils = require('./key_utils');
-const createHash = require('create-hash')
+const CryptoJS = require('crypto-js');
 const promiseAsync = require('./promise-async')
 
 const G = secp256k1.G
@@ -114,7 +114,11 @@ function PrivateKey(d) {
     */
     function getChildKey(name) {
       // console.error('WARNING: getChildKey untested against eosd'); // no eosd impl yet
-      const index = createHash('sha256').update(toBuffer()).update(name).digest()
+      const index = CryptoJS.algo.SHA256.create()
+        .update(CryptoJS.lib.WordArray.create(toBuffer()))
+        .update(name)
+        .finalize()
+        .toString();
       return PrivateKey(index)
     }
 
