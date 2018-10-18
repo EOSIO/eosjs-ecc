@@ -1,6 +1,6 @@
 const randomBytes = require('./randombytes')
 const ByteBuffer = require('bytebuffer')
-const crypto = require('browserify-aes')
+const CryptoJS = require('crypto-js');
 const assert = require('assert')
 const PublicKey = require('./key_public')
 const PrivateKey = require('./key_private')
