@@ -1,8 +1,9 @@
 {
-  "name": "eosjs-ecc",
+  "name": "eosjs-ecc-rn",
   "version": "4.0.4",
-  "description": "Elliptic curve cryptography functions",
-  "keywords": "ECC, Private Key, Public Key, Signature, AES, Encryption, Decryption",
+  "description": "Elliptic curve cryptography functions - react native version",
+  "keywords": "ECC, Private Key, Public Key, Signature, AES, Encryption, Decryption, React Native",
+  "author": "gamexcoin",
   "main": "lib/index.js",
   "files": [
     "README.md",
@@ -16,18 +17,23 @@
     "coveralls": "npm run coverage && cat ./coverage/lcov.info | ./node_modules/.bin/coveralls",
     "build": "npm run build_lib && npm run build_browser",
     "build_lib": "rm -f lib/* && babel src --out-dir lib",
-    "build_browser": "mkdir -p lib && browserify -o lib/eosjs-ecc.js -s eosjs_ecc lib/index.js",
+    "build_browser": "mkdir -p lib && browserify -o lib/eosjs-ecc-rn.js -s eosjs_ecc_rn lib/index.js",
     "build_browser_test": "npm run build && browserify -o dist/test.js lib/*.test.js",
     "documentation": "node_modules/documentation/bin/documentation.js",
-    "minimize": "uglifyjs lib/eosjs-ecc.js -o lib/eosjs-ecc.min.js --source-map --compress --mangle",
+    "minimize": "uglifyjs lib/eosjs-ecc-rn.js -o lib/eosjs-ecc-rn.min.js --source-map --compress --mangle",
     "docs": "npm run documentation -- readme src/api_common.js --section \"Common API\" --shallow",
-    "srisum": "npx srisum lib/eosjs-ecc.*",
+    "srisum": "npx srisum lib/eosjs-ecc-rn.*",
     "prepublishOnly": "npm run build && npm run test_lib && npm run minimize && npm run docs && npm run srisum"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/EOSIO/eosjs-ecc.git"
+    "url": "git://github.com/Game-X-Coin/eosjs-ecc-rn.git"
   },
+  "bugs": {
+    "url": "https://gitlab.com/Game-X-Coin/eosjs-ecc-rn/issues",
+    "email": "dev@gamexcoin.io"
+  },
+  "homepage": "https://gitlab.com/Game-X-Coin/eosjs-ecc-rn",
   "dependencies": {
     "assert": "^1.4.1",
     "bigi": "^1.4.2",

@@ -1,5 +1,9 @@
-[![NPM](https://img.shields.io/npm/v/eosjs-ecc.svg)](https://www.npmjs.org/package/eosjs-ecc)
-[![Build Status](https://travis-ci.org/EOSIO/eosjs-ecc.svg?branch=master)](https://travis-ci.org/EOSIO/eosjs-ecc)
+[![NPM](https://img.shields.io/npm/v/eosjs-ecc-rn.svg)](https://www.npmjs.org/package/eosjs-ecc-rn)
+[![Build Status](https://travis-ci.org/EOSIO/eosjs-ecc-rn.svg?branch=master)](https://travis-ci.org/EOSIO/eosjs-ecc-rn)
+
+# eosjs-ecc-rn (ECC React Native)
+
+Library based on [eosjs-ecc](https://github.com/EOSIO/eosjs-ecc), with React Native compatibility
 
 # Elliptic curve cryptography functions (ECC)
 
@@ -8,32 +12,32 @@ Private Key, Public Key, Signature, AES, Encryption / Decryption
 # Import
 
 ```js
-import ecc from 'eosjs-ecc'
+import ecc from 'eosjs-ecc-rn'
 // or
-const ecc = require('eosjs-ecc')
+const ecc = require('eosjs-ecc-rn')
 ```
 
 # Include
 
--   Install with: `npm install eosjs-ecc`
--   Html script tag, see [releases](https://github.com/EOSIO/eosjs-ecc/releases) for the correct **version** and its matching script **integrity** hash.
+-   Install with: `npm install eosjs-ecc-rn`
+-   Html script tag, see [releases](https://github.com/EOSIO/eosjs-ecc-rn/releases) for the correct **version** and its matching script **integrity** hash.
 
 ```html
 <html>
 <head>
   <meta charset="utf-8">
   <!--
-  sha512-cL+IQQaQ586s9DrXfGtDheRpj5iDKh2M+xlpfwbhNjRIp4BGQ1fkM/vB4Ta8mc+f51YBW9sJiPcyMDIreJe6gQ== lib/eosjs-ecc.js
-  sha512-dYFDmK/d9r3/NCp6toLtfkwOjSMRBaEzaGAx1tfRItC0nsI0hVLERk05iNBQR7uDNI7ludYhcBI4vUiFHdjsTQ== lib/eosjs-ecc.min.js
-  sha512-eq1SCoSe38uR1UVuQMwR73VgY8qKTBDc87n2nIiC5WLhn1o2y1U6c5wY8lrigVX7INM8fM0PxDlMX5WvpghKig== lib/eosjs-ecc.min.js.map
+  sha512-cL+IQQaQ586s9DrXfGtDheRpj5iDKh2M+xlpfwbhNjRIp4BGQ1fkM/vB4Ta8mc+f51YBW9sJiPcyMDIreJe6gQ== lib/eosjs-ecc-rn.js
+  sha512-dYFDmK/d9r3/NCp6toLtfkwOjSMRBaEzaGAx1tfRItC0nsI0hVLERk05iNBQR7uDNI7ludYhcBI4vUiFHdjsTQ== lib/eosjs-ecc-rn.min.js
+  sha512-eq1SCoSe38uR1UVuQMwR73VgY8qKTBDc87n2nIiC5WLhn1o2y1U6c5wY8lrigVX7INM8fM0PxDlMX5WvpghKig== lib/eosjs-ecc-rn.min.js.map
   -->
-  <script src="https://cdn.jsdelivr.net/npm/eosjs-ecc@4.0.4/lib/eosjs-ecc.min.js"
+  <script src="https://cdn.jsdelivr.net/npm/eosjs-ecc-rn@4.0.4/lib/eosjs-ecc-rn.min.js"
     integrity="sha512-dYFDmK/d9r3/NCp6toLtfkwOjSMRBaEzaGAx1tfRItC0nsI0hVLERk05iNBQR7uDNI7ludYhcBI4vUiFHdjsTQ=="
     crossorigin="anonymous"></script>
 
 </head>
 <body>
-  See console object: eosjs_ecc
+  See console object: eosjs_ecc_rn
 </body>
 </html>
 ```
@@ -289,7 +293,7 @@ Type: [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Globa
 # Usage (Object API)
 
 ```js
-let {PrivateKey, PublicKey, Signature, Aes, key_utils, config} = require('eosjs-ecc')
+let {PrivateKey, PublicKey, Signature, Aes, key_utils, config} = require('eosjs-ecc-rn')
 
 // Create a new random private key
 let privateWif
@@ -309,20 +313,20 @@ pubkey = PrivateKey.fromString(privateWif).toPublic().toString()
 # Browser
 
 ```bash
-git clone https://github.com/EOSIO/eosjs-ecc.git
-cd eosjs-ecc
+git clone https://github.com/EOSIO/eosjs-ecc-rn.git
+cd eosjs-ecc-rn
 npm install
 npm run build_browser
-# builds: ./dist/eosjs-ecc.js
+# builds: ./dist/eosjs-ecc-rn.js
 # Verify release hash
 ```
 
 ```html
-<script src=eosjs-ecc.js></script>
+<script src=eosjs-ecc-rn.js></script>
 ```
 
 ```js
-var ecc = eosjs_ecc
+var ecc = eosjs_ecc_rn
 
 ecc.randomKey().then(privateWif =>  {
   var pubkey = ecc.privateToPublic(privateWif)
