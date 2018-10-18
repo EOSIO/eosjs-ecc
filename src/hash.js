@@ -1,5 +1,4 @@
-const createHash = require('create-hash')
-const createHmac = require('create-hmac')
+const CryptoJS = require('crypto-js');
 
 /** @namespace hash */
 
@@ -8,7 +7,20 @@ const createHmac = require('create-hmac')
     @return {string|Buffer} - Buffer when resultEncoding is null, or string
 */
 function sha1(data, resultEncoding) {
-    return createHash('sha1').update(data).digest(resultEncoding)
+    if (Buffer.isBuffer(data)) {
+        data = CryptoJS.lib.WordArray.create(new Uint8Array(data));
+    }
+    
+    let result = CryptoJS.algo.SHA1.create()
+        .update(data)
+        .finalize()
+        .toString();
+    
+    if (!resultEncoding) {
+        result = Buffer.from(result, 'hex');
+    }
+    
+    return result;
 }
 
 /** @arg {string|Buffer} data
@@ -16,7 +28,20 @@ function sha1(data, resultEncoding) {
     @return {string|Buffer} - Buffer when resultEncoding is null, or string
 */
 function sha256(data, resultEncoding) {
-    return createHash('sha256').update(data).digest(resultEncoding)
+    if (Buffer.isBuffer(data)) {
+        data = CryptoJS.lib.WordArray.create(new Uint8Array(data));
+    }
+    
+    let result = CryptoJS.algo.SHA256.create()
+        .update(data)
+        .finalize()
+        .toString();
+    
+    if (!resultEncoding) {
+        result = Buffer.from(result, 'hex');
+    }
+    
+    return result;
 }
 
 /** @arg {string|Buffer} data
@@ -24,15 +49,53 @@ function sha256(data, resultEncoding) {
     @return {string|Buffer} - Buffer when resultEncoding is null, or string
 */
 function sha512(data, resultEncoding) {
-    return createHash('sha512').update(data).digest(resultEncoding)
+    if (Buffer.isBuffer(data)) {
+        data = CryptoJS.lib.WordArray.create(new Uint8Array(data));
+    }
+    
+    let result = CryptoJS.algo.SHA512.create()
+        .update(data)
+        .finalize()
+        .toString();
+    
+    if (!resultEncoding) {
+        result = Buffer.from(result, 'hex');
+    }
+    
+    return result;
 }
 
 function HmacSHA256(buffer, secret) {
-    return createHmac('sha256', secret).update(buffer).digest()
+    if (Buffer.isBuffer(buffer)) {
+        buffer = CryptoJS.lib.WordArray.create(new Uint8Array(buffer));
+    }
+    if (Buffer.isBuffer(secret)) {
+        secret = CryptoJS.lib.WordArray.create(new Uint8Array(secret));
+    }
+    
+    let result = CryptoJS.algo.HMAC.create(CryptoJS.algo.SHA256, secret)
+        .update(buffer)
+        .finalize()
+        .toString(CryptoJS.enc.Hex);
+    
+    result = Buffer.from(result, 'hex');
+    
+    return result;
 }
 
 function ripemd160(data) {
-    return createHash('rmd160').update(data).digest()
+    if (Buffer.isBuffer(data)) {
+        data = CryptoJS.lib.WordArray.create(new Uint8Array(data));
+    }
+    
+    let result = CryptoJS.algo.RIPEMD160.create()
+        .update(data)
+        .finalize()
+        .toString();
+    
+    result = Buffer.from(result, 'hex');
+    
+    return result;
 }
 
 // function hash160(buffer) {
