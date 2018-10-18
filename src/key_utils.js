@@ -1,6 +1,6 @@
 const base58 = require('bs58')
 const assert = require('assert')
-const randomBytes = require('randombytes');
+const randomBytes = require('./randombytes');
 
 const hash = require('./hash');
 

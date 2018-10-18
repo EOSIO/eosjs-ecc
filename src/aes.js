@@ -1,4 +1,4 @@
-const randomBytes = require('randombytes')
+const randomBytes = require('./randombytes')
 const ByteBuffer = require('bytebuffer')
 const crypto = require('browserify-aes')
 const assert = require('assert')
