@@ -83,6 +83,9 @@ const ecc = require('eosjs-ecc-rn')
     -   [sha256](#sha256)
         -   [Parameters](#parameters-10)
         -   [Examples](#examples-8)
+    -   [ripemd160](#ripemd160)
+        -   [Parameters](#parameters-11)
+        -   [Examples](#examples-9)
 -   [pubkey](#pubkey)
 
 ## wif
@@ -283,6 +286,24 @@ ecc.sha256(Buffer.from('02208b', 'hex')) === '29a23..'
 ```
 
 Returns **([string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Buffer](https://nodejs.org/api/buffer.html))** Buffer when encoding is null, or string
+
+### ripemd160
+
+#### Parameters
+
+-   `data` **([string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Buffer](https://nodejs.org/api/buffer.html))** always binary, you may need Buffer.from(data, 'hex')
+
+#### Examples
+
+```javascript
+ecc.ripemd160('hashme') === '02208b..'
+```
+
+```javascript
+ecc.ripemd160(Buffer.from('02208b', 'hex')) === '29a23..'
+```
+
+Returns **[Buffer](https://nodejs.org/api/buffer.html)** Buffer
 
 ## pubkey
 
