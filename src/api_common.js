@@ -196,7 +196,14 @@ ecc.randomKey().then(privateKey => {
         @example ecc.sha256('hashme') === '02208b..'
         @example ecc.sha256(Buffer.from('02208b', 'hex')) === '29a23..'
     */
-    sha256: (data, resultEncoding = 'hex') => hash.sha256(data, resultEncoding)
+    sha256: (data, resultEncoding = 'hex') => hash.sha256(data, resultEncoding),
+
+    /** @arg {string|Buffer} data - always binary, you may need Buffer.from(data, 'hex')
+        @return {Buffer} - Buffer
+        @example ecc.ripemd160('hashme') === '02208b..'
+        @example ecc.ripemd160(Buffer.from('02208b', 'hex')) === '29a23..'
+    */
+   ripemd160: (data) => hash.ripemd160(data)
 }
 
 module.exports = ecc

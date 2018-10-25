@@ -84,16 +84,23 @@ function HmacSHA256(buffer, secret) {
 }
 
 function ripemd160(data) {
-    if (Buffer.isBuffer(data)) {
-        data = CryptoJS.lib.WordArray.create(new Uint8Array(data));
+    let temp = data;
+    if (data instanceof Uint8Array) {
+        temp = CryptoJS.lib.WordArray.create(temp);
+    } else if (Buffer.isBuffer(data)) {
+        temp = CryptoJS.lib.WordArray.create(new Uint8Array(temp));
     }
     
     let result = CryptoJS.algo.RIPEMD160.create()
-        .update(data)
+        .update(temp)
         .finalize()
         .toString();
-    
+
     result = Buffer.from(result, 'hex');
+
+    if (data instanceof Uint8Array) {
+        result = new Uint8Array(result);
+    }
     
     return result;
 }
