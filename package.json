@@ -30,10 +30,10 @@
     "url": "git://github.com/Game-X-Coin/eosjs-ecc-rn.git"
   },
   "bugs": {
-    "url": "https://gitlab.com/Game-X-Coin/eosjs-ecc-rn/issues",
+    "url": "https://github.com/Game-X-Coin/eosjs-ecc-rn/issues",
     "email": "dev@gamexcoin.io"
   },
-  "homepage": "https://gitlab.com/Game-X-Coin/eosjs-ecc-rn",
+  "homepage": "https://github.com/Game-X-Coin/eosjs-ecc-rn",
   "dependencies": {
     "assert": "^1.4.1",
     "bigi": "^1.4.2",
