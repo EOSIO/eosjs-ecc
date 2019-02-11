@@ -32,7 +32,7 @@ function HmacSHA256(buffer, secret) {
 }
 
 function ripemd160(data) {
-    return createHash('rmd160').update(data).digest()
+    return createHash('ripemd160').update(data).digest()
 }
 
 // function hash160(buffer) {
