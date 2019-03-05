@@ -54,7 +54,8 @@ function Signature(r, s, i) {
         return ecdsa.verify(
             curve, dataSha256,
             { r: r, s: s },
-            publicKey.Q
+            publicKey.Q,
+            i
         );
     };
 
@@ -202,17 +203,17 @@ Signature.signHash = function(dataSha256, privateKey, encoding = 'hex') {
     privateKey = PrivateKey(privateKey)
     assert(privateKey, 'privateKey required')
 
-    var der, e, ecsignature, i, lenR, lenS, nonce;
+    var der, e, ecsignature, i, lenR, lenS, nonce, ypar;
     i = null;
     nonce = 0;
     e = BigInteger.fromBuffer(dataSha256);
     while (true) {
-      ecsignature = ecdsa.sign(curve, dataSha256, privateKey.d, nonce++);
+      [ecsignature, ypar] = ecdsa.sign(curve, dataSha256, privateKey.d, nonce++);
       der = ecsignature.toDER();
       lenR = der[3];
       lenS = der[5 + lenR];
       if (lenR === 32 && lenS === 32) {
-        i = ecdsa.calcPubKeyRecoveryParam(curve, e, ecsignature, privateKey.toPublic().Q);
+        i = ypar;// ecdsa.calcPubKeyRecoveryParam
         i += 4;  // compressed
         i += 27; // compact  //  24 or 27 :( forcing odd-y 2nd key candidate)
         break;

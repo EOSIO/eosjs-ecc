@@ -68,7 +68,7 @@ function sign(curve, hash, d, nonce) {
   var n = curve.n
   var G = curve.G
   
-  var r, s
+  var r, s, RyPar
   var k = deterministicGenerateK(curve, hash, d, function (k) {
     // find canonically valid signature
     var Q = G.multiply(k)
@@ -77,6 +77,7 @@ function sign(curve, hash, d, nonce) {
     
     r = Q.affineX.mod(n)
     if (r.signum() === 0) return false
+    RyPar = Q.affineY.testBit(0)
     
     s = k.modInverse(n).multiply(e.add(d.multiply(r))).mod(n)
     if (s.signum() === 0) return false
@@ -87,14 +88,19 @@ function sign(curve, hash, d, nonce) {
   var N_OVER_TWO = n.shiftRight(1)
 
   // enforce low S values, see bip62: 'low s values in signatures'
+  var sigparity
   if (s.compareTo(N_OVER_TWO) > 0) {
     s = n.subtract(s)
+    sigparity = RyPar ? 0 : 1
+  }
+  else {
+    sigparity = RyPar ? 1 : 0
   }
 
-  return ECSignature(r, s)
+  return ([ECSignature(r, s), sigparity])
 }
 
-function verifyRaw(curve, e, signature, Q) {
+function verifyRaw(curve, e, signature, Q, Rypar) {
   var n = curve.n
   var G = curve.G
 
@@ -125,15 +131,18 @@ function verifyRaw(curve, e, signature, Q) {
   // 1.4.7 Set v = xR mod n
   var v = xR.mod(n)
   
+  // Extract R.y parity
+  var RyParComputed = R.affineY.testBit(0) ? 1 : 0
+
   // 1.4.8 If v = r, output "valid", and if v != r, output "invalid"
-  return v.equals(r)
+  return v.equals(r)  &&  RyParComputed === Rypar
 }
 
-function verify(curve, hash, signature, Q) {
+function verify(curve, hash, signature, Q, Rpar) {
   // 1.4.2 H = Hash(M), already done by the user
   // 1.4.3 e = H
   var e = BigInteger.fromBuffer(hash)
-  return verifyRaw(curve, e, signature, Q)
+  return verifyRaw(curve, e, signature, Q, Rpar-31)
 }
 
 /**
