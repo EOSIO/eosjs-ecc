@@ -1,8 +1,8 @@
 {
   "name": "eosjs-ecc",
-  "version": "4.0.4",
+  "version": "4.0.5",
   "description": "Elliptic curve cryptography functions",
-  "keywords": "ECC, Private Key, Public Key, Signature, AES, Encryption, Decryption",
+  "keywords": ["ECC", "Private Key", "Public Key", "Signature", "AES", "Encryption", "Decryption"],
   "main": "lib/index.js",
   "files": [
     "README.md",
@@ -29,27 +29,27 @@
     "url": "git://github.com/EOSIO/eosjs-ecc.git"
   },
   "dependencies": {
-    "bigi": "^1.4.2",
-    "browserify-aes": "^1.0.6",
-    "bs58": "^4.0.1",
-    "bytebuffer": "^5.0.1",
-    "create-hash": "^1.1.3",
-    "create-hmac": "^1.1.6",
-    "ecurve": "^1.0.5",
-    "randombytes": "^2.0.5"
+    "bigi": "1.4.2",
+    "browserify-aes": "1.2.0",
+    "bs58": "4.0.1",
+    "bytebuffer": "5.0.1",
+    "create-hash": "1.2.0",
+    "create-hmac": "1.1.7",
+    "ecurve": "1.0.6",
+    "randombytes": "2.1.0"
   },
   "license": "MIT",
   "devDependencies": {
     "babel-cli": "6.26.0",
-    "babel-core": "^6.26.3",
+    "babel-core": "6.26.3",
     "babel-preset-es2015": "6.24.1",
-    "browserify": "14.4.0",
-    "coveralls": "^3.0.0",
-    "documentation": "^8.1.1",
-    "istanbul": "^0.4.5",
-    "mocha": "^5.2.0",
-    "nyc": "^13.0.1",
-    "uglify-js": "3.4.2"
+    "browserify": "16.2.3",
+    "coveralls": "3.0.3",
+    "documentation": "9.3.1",
+    "istanbul": "0.4.5",
+    "mocha": "6.0.2",
+    "nyc": "13.3.0",
+    "uglify-js": "3.5.2"
   },
   "babel": {
     "presets": [
