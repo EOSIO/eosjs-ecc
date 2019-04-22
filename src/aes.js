@@ -1,6 +1,6 @@
-const randomBytes = require('randombytes')
+const randomBytes = require('./randombytes')
 const ByteBuffer = require('bytebuffer')
-const crypto = require('browserify-aes')
+const CryptoJS = require('crypto-js');
 const assert = require('assert')
 const PublicKey = require('./key_public')
 const PrivateKey = require('./key_private')
@@ -122,9 +122,11 @@ function crypt(private_key, public_key, nonce, message, checksum) {
 function cryptoJsDecrypt(message, key, iv) {
     assert(message, "Missing cipher text")
     message = toBinaryBuffer(message)
-    const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv)
-    // decipher.setAutoPadding(true)
-    message = Buffer.concat([decipher.update(message), decipher.final()])
+    message = CryptoJS.AES.decrypt(message, key, {
+        iv,
+        padding: CryptoJS.pad.Pkcs7,
+        mode: CryptoJS.mode.CBC
+    });
     return message
 }
 
@@ -138,9 +140,11 @@ function cryptoJsDecrypt(message, key, iv) {
 function cryptoJsEncrypt(message, key, iv) {
     assert(message, "Missing plain text")
     message = toBinaryBuffer(message)
-    const cipher = crypto.createCipheriv('aes-256-cbc', key, iv)
-    // cipher.setAutoPadding(true)
-    message = Buffer.concat([cipher.update(message), cipher.final()])
+    message = CryptoJS.AES.encrypt(message, key, {
+        iv,
+        padding: CryptoJS.pad.Pkcs7,
+        mode: CryptoJS.mode.CBC
+    });
     return message
 }
 
