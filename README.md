@@ -1,9 +1,5 @@
-[![NPM](https://img.shields.io/npm/v/eosjs-ecc-rn.svg)](https://www.npmjs.org/package/eosjs-ecc-rn)
-[![Build Status](https://travis-ci.org/Game-X-Coin/eosjs-ecc-rn.svg?branch=master)](https://travis-ci.org/Game-X-Coin/eosjs-ecc-rn)
-
-# eosjs-ecc-rn (ECC React Native)
-
-Library based on [eosjs-ecc](https://github.com/EOSIO/eosjs-ecc), with React Native compatibility
+[![NPM](https://img.shields.io/npm/v/eosjs-ecc.svg)](https://www.npmjs.org/package/eosjs-ecc)
+[![Build Status](https://travis-ci.org/EOSIO/eosjs-ecc.svg?branch=master)](https://travis-ci.org/EOSIO/eosjs-ecc)
 
 # Elliptic curve cryptography functions (ECC)
 
@@ -12,32 +8,32 @@ Private Key, Public Key, Signature, AES, Encryption / Decryption
 # Import
 
 ```js
-import ecc from 'eosjs-ecc-rn'
+import ecc from 'eosjs-ecc'
 // or
-const ecc = require('eosjs-ecc-rn')
+const ecc = require('eosjs-ecc')
 ```
 
 # Include
 
--   Install with: `npm install eosjs-ecc-rn`
--   Html script tag, see [releases](https://github.com/EOSIO/eosjs-ecc-rn/releases) for the correct **version** and its matching script **integrity** hash.
+-   Install with: `npm install eosjs-ecc`
+-   Html script tag, see [releases](https://github.com/EOSIO/eosjs-ecc/releases) for the correct **version** and its matching script **integrity** hash.
 
 ```html
 <html>
 <head>
   <meta charset="utf-8">
   <!--
-  sha512-cL+IQQaQ586s9DrXfGtDheRpj5iDKh2M+xlpfwbhNjRIp4BGQ1fkM/vB4Ta8mc+f51YBW9sJiPcyMDIreJe6gQ== lib/eosjs-ecc-rn.js
-  sha512-dYFDmK/d9r3/NCp6toLtfkwOjSMRBaEzaGAx1tfRItC0nsI0hVLERk05iNBQR7uDNI7ludYhcBI4vUiFHdjsTQ== lib/eosjs-ecc-rn.min.js
-  sha512-eq1SCoSe38uR1UVuQMwR73VgY8qKTBDc87n2nIiC5WLhn1o2y1U6c5wY8lrigVX7INM8fM0PxDlMX5WvpghKig== lib/eosjs-ecc-rn.min.js.map
+  sha512-cL+IQQaQ586s9DrXfGtDheRpj5iDKh2M+xlpfwbhNjRIp4BGQ1fkM/vB4Ta8mc+f51YBW9sJiPcyMDIreJe6gQ== lib/eosjs-ecc.js
+  sha512-dYFDmK/d9r3/NCp6toLtfkwOjSMRBaEzaGAx1tfRItC0nsI0hVLERk05iNBQR7uDNI7ludYhcBI4vUiFHdjsTQ== lib/eosjs-ecc.min.js
+  sha512-eq1SCoSe38uR1UVuQMwR73VgY8qKTBDc87n2nIiC5WLhn1o2y1U6c5wY8lrigVX7INM8fM0PxDlMX5WvpghKig== lib/eosjs-ecc.min.js.map
   -->
-  <script src="https://cdn.jsdelivr.net/npm/eosjs-ecc-rn@4.0.4/lib/eosjs-ecc-rn.min.js"
+  <script src="https://cdn.jsdelivr.net/npm/eosjs-ecc@4.0.4/lib/eosjs-ecc.min.js"
     integrity="sha512-dYFDmK/d9r3/NCp6toLtfkwOjSMRBaEzaGAx1tfRItC0nsI0hVLERk05iNBQR7uDNI7ludYhcBI4vUiFHdjsTQ=="
     crossorigin="anonymous"></script>
 
 </head>
 <body>
-  See console object: eosjs_ecc_rn
+  See console object: eosjs_ecc
 </body>
 </html>
 ```
@@ -83,9 +79,6 @@ const ecc = require('eosjs-ecc-rn')
     -   [sha256](#sha256)
         -   [Parameters](#parameters-10)
         -   [Examples](#examples-8)
-    -   [ripemd160](#ripemd160)
-        -   [Parameters](#parameters-11)
-        -   [Examples](#examples-9)
 -   [pubkey](#pubkey)
 
 ## wif
@@ -104,7 +97,7 @@ generation.
 
 Initialization happens once even if called multiple times.
 
-Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)** 
+Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)**
 
 ### unsafeRandomKey
 
@@ -129,7 +122,7 @@ console.log('Public Key:\t', ecc.privateToPublic(privateKey)) // EOSkey...
 })
 ```
 
-Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[wif](#wif)>** 
+Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)&lt;[wif](#wif)>**
 
 ### seedPrivate
 
@@ -145,13 +138,13 @@ Returns **[Promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/
 ecc.seedPrivate('secret') === wif
 ```
 
-Returns **[wif](#wif)** 
+Returns **[wif](#wif)**
 
 ### privateToPublic
 
 #### Parameters
 
--   `wif` **[wif](#wif)** 
+-   `wif` **[wif](#wif)**
 -   `pubkey_prefix` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** public key prefix (optional, default `'EOS'`)
 
 #### Examples
@@ -160,7 +153,7 @@ Returns **[wif](#wif)**
 ecc.privateToPublic(wif) === pubkey
 ```
 
-Returns **[pubkey](#pubkey)** 
+Returns **[pubkey](#pubkey)**
 
 ### isValidPublic
 
@@ -181,7 +174,7 @@ Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/
 
 #### Parameters
 
--   `wif` **[wif](#wif)** 
+-   `wif` **[wif](#wif)**
 
 #### Examples
 
@@ -197,8 +190,8 @@ Create a signature using data or a hash.
 
 #### Parameters
 
--   `data` **([string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Buffer](https://nodejs.org/api/buffer.html))** 
--   `privateKey` **([wif](#wif) | PrivateKey)** 
+-   `data` **([string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Buffer](https://nodejs.org/api/buffer.html))**
+-   `privateKey` **([wif](#wif) | PrivateKey)**
 -   `encoding` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** data encoding (if string) (optional, default `'utf8'`)
 
 #### Examples
@@ -214,7 +207,7 @@ Returns **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/G
 #### Parameters
 
 -   `dataSha256` **([String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Buffer](https://nodejs.org/api/buffer.html))** sha256 hash 32 byte buffer or string
--   `privateKey` **([wif](#wif) | PrivateKey)** 
+-   `privateKey` **([wif](#wif) | PrivateKey)**
 -   `encoding` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** dataSha256 encoding (if string) (optional, default `'hex'`)
 
 Returns **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** string signature
@@ -226,8 +219,8 @@ Verify signed data.
 #### Parameters
 
 -   `signature` **([string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Buffer](https://nodejs.org/api/buffer.html))** buffer or hex string
--   `data` **([string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Buffer](https://nodejs.org/api/buffer.html))** 
--   `pubkey` **([pubkey](#pubkey) | PublicKey)** 
+-   `data` **([string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Buffer](https://nodejs.org/api/buffer.html))**
+-   `pubkey` **([pubkey](#pubkey) | PublicKey)**
 -   `encoding`   (optional, default `'utf8'`)
 -   `hashData` **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** sha256 hash data before verify (optional, default `true`)
 
@@ -237,7 +230,7 @@ Verify signed data.
 ecc.verify(signature, 'I am alive', pubkey) === true
 ```
 
-Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** 
+Returns **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)**
 
 ### recover
 
@@ -255,7 +248,7 @@ Recover the public key used to create the signature.
 ecc.recover(signature, 'I am alive') === pubkey
 ```
 
-Returns **[pubkey](#pubkey)** 
+Returns **[pubkey](#pubkey)**
 
 ### recoverHash
 
@@ -265,7 +258,7 @@ Returns **[pubkey](#pubkey)**
 -   `dataSha256` **([String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Buffer](https://nodejs.org/api/buffer.html))** sha256 hash 32 byte buffer or hex string
 -   `encoding` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** dataSha256 encoding (if dataSha256 is a string) (optional, default `'hex'`)
 
-Returns **PublicKey** 
+Returns **PublicKey**
 
 ### sha256
 
@@ -287,24 +280,6 @@ ecc.sha256(Buffer.from('02208b', 'hex')) === '29a23..'
 
 Returns **([string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Buffer](https://nodejs.org/api/buffer.html))** Buffer when encoding is null, or string
 
-### ripemd160
-
-#### Parameters
-
--   `data` **([string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Buffer](https://nodejs.org/api/buffer.html))** always binary, you may need Buffer.from(data, 'hex')
-
-#### Examples
-
-```javascript
-ecc.ripemd160('hashme') === '02208b..'
-```
-
-```javascript
-ecc.ripemd160(Buffer.from('02208b', 'hex')) === '29a23..'
-```
-
-Returns **[Buffer](https://nodejs.org/api/buffer.html)** Buffer
-
 ## pubkey
 
 EOSKey..
@@ -314,7 +289,7 @@ Type: [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Globa
 # Usage (Object API)
 
 ```js
-let {PrivateKey, PublicKey, Signature, Aes, key_utils, config} = require('eosjs-ecc-rn')
+let {PrivateKey, PublicKey, Signature, Aes, key_utils, config} = require('eosjs-ecc')
 
 // Create a new random private key
 let privateWif
@@ -334,20 +309,20 @@ pubkey = PrivateKey.fromString(privateWif).toPublic().toString()
 # Browser
 
 ```bash
-git clone https://github.com/EOSIO/eosjs-ecc-rn.git
-cd eosjs-ecc-rn
+git clone https://github.com/EOSIO/eosjs-ecc.git
+cd eosjs-ecc
 npm install
 npm run build_browser
-# builds: ./dist/eosjs-ecc-rn.js
+# builds: ./dist/eosjs-ecc.js
 # Verify release hash
 ```
 
 ```html
-<script src=eosjs-ecc-rn.js></script>
+<script src=eosjs-ecc.js></script>
 ```
 
 ```js
-var ecc = eosjs_ecc_rn
+var ecc = eosjs_ecc
 
 ecc.randomKey().then(privateWif =>  {
   var pubkey = ecc.privateToPublic(privateWif)
