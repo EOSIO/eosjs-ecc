@@ -137,7 +137,7 @@ function cryptoJsDecrypt(box, key, nonce) {
 function cryptoJsEncrypt(message, key, nonce) {
     assert(message, "Missing plain text")
     message = toBinaryBuffer(message)
-    return nacl.secretbox(message, nonce, key)
+    return Buffer.from(nacl.secretbox(message, nonce, key))
 }
 
 /** @return {string} 192bit random nonce. Long enough to be unique.  This value could be recorded in the blockchain for a long time.
