@@ -15,7 +15,7 @@ const ecc = require('eosjs-ecc')
 
 # Include
 
--   Install with: `npm install eosjs-ecc`
+-   Install with: `yarn add eosjs-ecc`
 -   Html script tag, see [releases](https://github.com/EOSIO/eosjs-ecc/releases) for the correct **version** and its matching script **integrity** hash.
 
 ```html
@@ -311,8 +311,8 @@ pubkey = PrivateKey.fromString(privateWif).toPublic().toString()
 ```bash
 git clone https://github.com/EOSIO/eosjs-ecc.git
 cd eosjs-ecc
-npm install
-npm run build_browser
+yarn
+yarn build_browser
 # builds: ./dist/eosjs-ecc.js
 # Verify release hash
 ```
