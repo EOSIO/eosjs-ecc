@@ -51,6 +51,7 @@
     "@babel/cli": "7.4.4",
     "@babel/core": "7.4.4",
     "@babel/preset-env": "7.4.4",
+    "babelify": "^10.0.0",
     "browserify": "16.2.3",
     "coveralls": "3.0.3",
     "documentation": "8.1.1",
@@ -66,5 +67,8 @@
     "presets": [
       "@babel/preset-env"
     ]
+  },
+  "browserify": {
+    "transform": [["babelify", { "presets": ["@babel/preset-env"] }]]
   }
 }
