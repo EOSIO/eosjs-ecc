@@ -30,7 +30,7 @@
     "minimize": "terser lib/eosjs-ecc.js -o lib/eosjs-ecc.min.js --source-map --compress --mangle",
     "docs": "yarn documentation -- readme src/api_common.js --section \"Common API\" --shallow",
     "srisum": "npx srisum lib/eosjs-ecc.*",
-    "prepublishOnly": "yarn build && yarn test_lib && yarn minimize && yarn docs && yarn srisum"
+    "prepublishOnly": "yarn build && yarn minimize && yarn test_lib && yarn docs && yarn srisum"
   },
   "repository": {
     "type": "git",
