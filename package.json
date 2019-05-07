@@ -27,7 +27,7 @@
     "build_browser": "mkdir -p lib && browserify -o lib/eosjs-ecc.js -s eosjs_ecc lib/index.js",
     "build_browser_test": "yarn build && browserify -o dist/test.js lib/*.test.js",
     "documentation": "node_modules/documentation/bin/documentation.js",
-    "minimize": "uglifyjs lib/eosjs-ecc.js -o lib/eosjs-ecc.min.js --source-map --compress --mangle",
+    "minimize": "terser lib/eosjs-ecc.js -o lib/eosjs-ecc.min.js --source-map --compress --mangle",
     "docs": "yarn documentation -- readme src/api_common.js --section \"Common API\" --shallow",
     "srisum": "npx srisum lib/eosjs-ecc.*",
     "prepublishOnly": "yarn build && yarn test_lib && yarn minimize && yarn docs && yarn srisum"
@@ -51,14 +51,13 @@
     "@babel/cli": "7.4.4",
     "@babel/core": "7.4.4",
     "@babel/preset-env": "7.4.4",
-    "babelify": "^10.0.0",
     "browserify": "16.2.3",
     "coveralls": "3.0.3",
     "documentation": "8.1.1",
     "istanbul": "0.4.5",
     "mocha": "5.2.0",
     "nyc": "14.1.0",
-    "uglify-js": "3.4.2"
+    "terser": "3.17.0"
   },
   "nyc": {
     "temp-directory": "./coverage/.nyc_output"
@@ -67,8 +66,5 @@
     "presets": [
       "@babel/preset-env"
     ]
-  },
-  "browserify": {
-    "transform": [["babelify", { "presets": ["@babel/preset-env"] }]]
   }
 }
