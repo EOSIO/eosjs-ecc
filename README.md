@@ -8,9 +8,9 @@ Private Key, Public Key, Signature, AES, Encryption / Decryption
 # Import
 
 ```js
-import ecc from 'eosjs-ecc'
+import ecc from 'eosjs-ecc-priveos'
 // or
-const ecc = require('eosjs-ecc')
+const ecc = require('eosjs-ecc-priveos')
 ```
 
 # Include
