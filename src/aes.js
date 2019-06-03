@@ -7,7 +7,9 @@ const nacl = require("tweetnacl/nacl-fast")
 
 module.exports = {
   encrypt,
-  decrypt
+  decrypt,
+  decrypt_shared_secret,
+  encrypt_shared_secret,
 }
 
 const nonceLength = 24
@@ -27,6 +29,9 @@ function encrypt(private_key, public_key, message) {
     return crypt(private_key, public_key, message, true)
 }
 
+function encrypt_shared_secret(shared_secret, message) {
+  return crypt_shared_secret(shared_secret, message, true)
+}
 /**
     Spec: http://localhost:3002/steem/@dantheman/how-to-encrypt-a-memo-when-transferring-steem
 
@@ -44,6 +49,10 @@ function decrypt(private_key, public_key, box) {
     return crypt(private_key, public_key, box, false)
 }
 
+function decrypt_shared_secret(shared_secret, box) {
+  return crypt_shared_secret(shared_secret, box, false)
+}
+
 /**
     @arg {Buffer} message - Encrypted or plain text message (see checksum)
     @arg {number} checksum - shared secret checksum (null to encrypt, non-null to decrypt)
@@ -57,45 +66,49 @@ function crypt(private_key, public_key, box, encrypt) {
 
     public_key = PublicKey(public_key)
     if (!public_key)
-        throw new TypeError('public_key is required')
-
-    if(encrypt) {
-      nonce = uniqueNonce()
-      message = box
-    } else {
-      ({nonce, checksum, message} = deserialize(box))
-    }
-    
-    if (!nonce)
-        throw new TypeError('nonce is required')
-
-    if (!Buffer.isBuffer(message)) {
-        if (typeof message !== 'string')
-            throw new TypeError('message should be buffer or string')
-        message = new Buffer(message, 'binary')
-    }
+        throw new TypeError('public_key is required')  
 
     const S = private_key.getSharedSecret(public_key);
-    const ekey_length = S.length + nonce.length
-    let ebuf = Buffer.concat([nonce, S], ekey_length)
-    const encryption_key = hash.sha512(ebuf)
+    return crypt_shared_secret(S, box, encrypt);
+    
+}
 
-    const iv = encryption_key.slice(32, 56)
-    const key = encryption_key.slice(0, 32)
+function crypt_shared_secret(S, box, encrypt) {
+  let nonce, checksum, message
+  if(encrypt) {
+    nonce = uniqueNonce()
+    message = box
+  } else {
+    ({nonce, checksum, message} = deserialize(box))
+  }
+  if (!Buffer.isBuffer(message)) {
+      if (typeof message !== 'string')
+          throw new TypeError('message should be buffer or string')
+      message = new Buffer(message, 'binary')
+  }
+  assert(Buffer.isBuffer(S), "S is not a buffer")
+  assert(Buffer.isBuffer(nonce), "nonce is not a buffer")
+  
+  const ekey_length = S.length + nonce.length
+  let ebuf = Buffer.concat([nonce, S], ekey_length)
+  const encryption_key = hash.sha512(ebuf)
 
-    // check is first 64 bit of sha256 hash
-    let check = hash.sha256(encryption_key)
-    check = check.slice(0, 8)
+  const iv = encryption_key.slice(32, 56)
+  const key = encryption_key.slice(0, 32)
 
-    if (checksum) {
-        if (!check.equals(checksum)) {
-            throw new Error('Invalid checksum')
-        }
-        return cryptoJsDecrypt(message, key, iv)
-    } else {
-        message = cryptoJsEncrypt(message, key, iv)
-        return serialize(nonce, check, message)
-    }
+  // check is first 64 bit of sha256 hash
+  let check = hash.sha256(encryption_key)
+  check = check.slice(0, 8)
+
+  if (checksum) {
+      if (!check.equals(checksum)) {
+          throw new Error('Invalid checksum')
+      }
+      return cryptoJsDecrypt(message, key, iv)
+  } else {
+      message = cryptoJsEncrypt(message, key, iv)
+      return serialize(nonce, check, message)
+  }
 }
 
 function serialize(nonce, check, message) {
@@ -122,7 +135,7 @@ function cryptoJsDecrypt(box, key, nonce) {
     box = toBinaryBuffer(box)
     const decrypted = nacl.secretbox.open(box, nonce, key)
     if(decrypted === null) {
-      throw new Error('Secretbox refused to open (most likely corrupted or tampered message)')
+      throw new Error('Secretbox refused to open (wrong key or corrupted or tampered message)')
     }
     return Buffer.from(decrypted)
 }

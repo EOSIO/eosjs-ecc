@@ -32,5 +32,13 @@ describe('encrypt/decrypt', () => {
     })
   })
   
+  it("encryption with pre-existing shared secret", async function() {
+    const shared_secret = Buffer.from("1234")
+    const message = Buffer.from("My first message")
+    const box = ecc.Aes.encrypt_shared_secret(shared_secret, message)
+    const decrypted =ecc.Aes.decrypt_shared_secret(shared_secret, box)
+    assert.deepEqual(decrypted, message)
+  })
+  
 })
   
