@@ -19,7 +19,7 @@
     "build_browser": "mkdir -p lib && browserify -o lib/eosjs-ecc.js -s eosjs_ecc lib/index.js",
     "build_browser_test": "npm run build && browserify -o dist/test.js lib/*.test.js",
     "documentation": "node_modules/documentation/bin/documentation.js",
-    "minimize": "uglifyjs lib/eosjs-ecc.js -o lib/eosjs-ecc.min.js --source-map --compress --mangle",
+    "minimize": "terser lib/eosjs-ecc.js -o lib/eosjs-ecc.min.js --source-map --compress --mangle",
     "docs": "npm run documentation -- readme src/api_common.js --section \"Common API\" --shallow",
     "srisum": "npx srisum lib/eosjs-ecc.*",
     "prepublishOnly": "npm run build && npm run test_lib && npm run minimize && npm run docs && npm run srisum"
@@ -35,6 +35,7 @@
     "create-hmac": "^1.1.6",
     "ecurve": "^1.0.5",
     "randombytes": "^2.0.5",
+    "terser": "^4.0.0",
     "tweetnacl": "^1.0.1"
   },
   "license": "MIT",
@@ -47,8 +48,7 @@
     "documentation": "^8.1.1",
     "istanbul": "^0.4.5",
     "mocha": "^5.2.0",
-    "nyc": "^13.0.1",
-    "uglify-js": "3.4.2"
+    "nyc": "^13.0.1"
   },
   "babel": {
     "presets": [
