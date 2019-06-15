@@ -33,9 +33,6 @@ function random32ByteBuffer({cpuEntropyBits = 0, safe = true} = {}) {
     assert.equal(typeof cpuEntropyBits, 'number', 'cpuEntropyBits')
     assert.equal(typeof safe, 'boolean', 'boolean')
 
-    if(safe) {
-      assert(entropyCount >= 128, 'Call initialize() to add entropy')
-    }
 
     // if(entropyCount > 0) {
     //     console.log(`Additional private key entropy: ${entropyCount} events`)
