@@ -215,7 +215,7 @@ function checkDecode(keyString, keyType = null) {
       newCheck = hash.ripemd160(Buffer.concat(check)).slice(0, 4) //PVT
     }
 
-    if (checksum.toString() !== newCheck.toString()) {
+    if (checksum.toString('hex') !== newCheck.toString('hex')) {
         throw new Error('Invalid checksum, ' +
             `${checksum.toString('hex')} != ${newCheck.toString('hex')}`
         )
