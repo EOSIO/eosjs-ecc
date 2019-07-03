@@ -1,6 +1,26 @@
+env:
+  global:
+    PUBLISH_NPM_LATEST_FROM="master"
+sudo: false
 language: node_js
 node_js:
-  - "10"
+  - "10.0.0"
 
+before_install:
+  - npm i -g npm@6.4.1  
+  - yarn global add webpack 
 script:
+  - yarn test
   - cd dist && ./run_tests.sh
+deploy:
+  - provider: script
+    script: bash ./scripts/publish-edge.sh
+    on:
+      branch: : develop
+  - provider: script
+    skip_cleanup: true
+    script:
+      - ./scripts/publish-tag.sh $PUBLISH_NPM_LATEST_FROM
+    on:
+      tags: true
+      condition: "$TRAVIS_TAG =~ ^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
