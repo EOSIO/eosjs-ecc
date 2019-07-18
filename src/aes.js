@@ -13,7 +13,6 @@ module.exports = {
 }
 
 const nonceLength = 24
-const checkLength = 8
 /**
     Spec: http://localhost:3002/steem/@dantheman/how-to-encrypt-a-memo-when-transferring-steem
 
@@ -59,7 +58,7 @@ function decrypt_shared_secret(shared_secret, box) {
     @private
 */
 function crypt(private_key, public_key, box, encrypt) {
-    let nonce, checksum, message
+    let nonce, message
     private_key = PrivateKey(private_key)
     if (!private_key)
         throw new TypeError('private_key is required')
@@ -74,12 +73,12 @@ function crypt(private_key, public_key, box, encrypt) {
 }
 
 function crypt_shared_secret(S, box, encrypt) {
-  let nonce, checksum, message
+  let nonce, message
   if(encrypt) {
     nonce = uniqueNonce()
     message = box
   } else {
-    ({nonce, checksum, message} = deserialize(box))
+    ({nonce, message} = deserialize(box))
   }
   if (!Buffer.isBuffer(message)) {
       if (typeof message !== 'string')
@@ -96,31 +95,23 @@ function crypt_shared_secret(S, box, encrypt) {
   const iv = encryption_key.slice(32, 56)
   const key = encryption_key.slice(0, 32)
 
-  // check is first 64 bit of sha256 hash
-  let check = hash.sha256(encryption_key)
-  check = check.slice(0, 8)
-
-  if (checksum) {
-      if (!check.equals(checksum)) {
-          throw new Error('Invalid checksum')
-      }
-      return cryptoJsDecrypt(message, key, iv)
-  } else {
+  if (encrypt) {
       message = cryptoJsEncrypt(message, key, iv)
-      return serialize(nonce, check, message)
+      return serialize(nonce, message)
+  } else {
+      return cryptoJsDecrypt(message, key, iv)
   }
 }
 
-function serialize(nonce, check, message) {
-  const len = nonceLength + checkLength + message.length
-  return Buffer.concat([nonce, check, message], len)
+function serialize(nonce, message) {
+  const len = nonceLength + message.length
+  return Buffer.concat([nonce, message], len)
 }
 
 function deserialize(buf) {
   const nonce = buf.slice(0, nonceLength)
-  const checksum = buf.slice(nonceLength, nonceLength + checkLength)
-  const message = buf.slice(nonceLength + checkLength)
-  return {nonce, checksum, message}
+  const message = buf.slice(nonceLength)
+  return {nonce, message}
 }
 /** This method both decrypts and checks the authenticity of the messsage.
 
