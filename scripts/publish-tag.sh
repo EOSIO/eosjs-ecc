@@ -28,10 +28,10 @@ else
 
   if [[ "$TRAVIS_TAG" == *"-beta"* ]]; then
     echo "Publishing with beta tag to npm"
-    npm publish --tag beta
+    npm publish --dry-run --tag beta
   else
     echo "Publishing with latest tag to npm"
-    npm publish
+    npm publish --dry-run
   fi
 fi
 
