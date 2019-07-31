@@ -45,7 +45,6 @@ const ecc = require('eosjs-ecc')
 ### Table of Contents
 
 -   [wif](#wif)
--   [pubkey](#pubkey)
 -   [ecc](#ecc)
     -   [initialize](#initialize)
     -   [unsafeRandomKey](#unsaferandomkey)
@@ -80,16 +79,11 @@ const ecc = require('eosjs-ecc')
     -   [sha256](#sha256)
         -   [Parameters](#parameters-10)
         -   [Examples](#examples-8)
+-   [pubkey](#pubkey)
 
 ## wif
 
 [Wallet Import Format](https://en.bitcoin.it/wiki/Wallet_import_format)
-
-Type: [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)
-
-## pubkey
-
-EOSKey..
 
 Type: [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)
 
@@ -285,6 +279,12 @@ ecc.sha256(Buffer.from('02208b', 'hex')) === '29a23..'
 ```
 
 Returns **([string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Buffer](https://nodejs.org/api/buffer.html))** Buffer when encoding is null, or string
+
+## pubkey
+
+EOSKey..
+
+Type: [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)
 
 # Usage (Object API)
 

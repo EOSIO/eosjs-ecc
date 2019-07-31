@@ -1,6 +1,24 @@
+env:
+  global:
+    PUBLISH_NPM_LATEST_FROM="master"
+sudo: false
 language: node_js
 node_js:
-  - "10"
+  - "10.0.0"
 
+before_install:
+  - npm i -g npm@6.4.1  
+  - yarn global add webpack 
 script:
-  - cd dist && ./run_tests.sh
+  - yarn test
+  - cd dist && ./run_tests.sh && cd ..
+deploy:
+  - provider: script
+    script: bash ./scripts/publish-edge.sh
+    on:
+      branch: develop 
+  - provider: script
+    skip_cleanup: true
+    script: bash ./scripts/publish-tag.sh
+    on:
+      tags: true
