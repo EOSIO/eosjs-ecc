@@ -1,6 +1,6 @@
 env:
   global:
-    PUBLISH_NPM_LATEST_FROM="master"
+    PUBLISH_NPM_LATEST_FROM="nelson/add-bintra-deploy"
 sudo: false
 language: node_js
 node_js:
