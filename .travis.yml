@@ -15,8 +15,8 @@ script:
 deploy:
   - provider: script
     script: bash ./scripts/publish-edge.sh
-    on:
-      branch: : develop
+    # on:
+    #   branch: develop 
   - provider: script
     skip_cleanup: true
     script:
