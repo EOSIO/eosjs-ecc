@@ -76,7 +76,7 @@ function PrivateKey(d) {
     /**
       ECIES
       @arg {string|Object} pubkey wif, PublicKey object
-      @return {Buffer} 64 byte shared secret
+      @return {Buffer} 32 byte shared secret
     */
     function getSharedSecret(public_key) {
         public_key = PublicKey(public_key)
@@ -89,8 +89,7 @@ function PrivateKey(d) {
         let r = toBuffer()
         let P = KBP.multiply(BigInteger.fromBuffer(r))
         let S = P.affineX.toBuffer({size: 32})
-        // SHA512 used in ECIES
-        return hash.sha512(S)
+        return S
     }
 
     // /** ECIES TODO unit test
@@ -268,9 +267,9 @@ function initialize() {
     return
   }
 
-  unitTest()
-  keyUtils.addEntropy(...keyUtils.cpuEntropy())
-  assert(keyUtils.entropyCount() >= 128, 'insufficient entropy')
+  // unitTest()
+  // keyUtils.addEntropy(...keyUtils.cpuEntropy())
+  // assert(keyUtils.entropyCount() >= 128, 'insufficient entropy')
 
   initialized = true
 }

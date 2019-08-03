@@ -1,18 +1,18 @@
 const randomBytes = require('randombytes')
-const ByteBuffer = require('bytebuffer')
-const crypto = require('browserify-aes')
 const assert = require('assert')
 const PublicKey = require('./key_public')
 const PrivateKey = require('./key_private')
 const hash = require('./hash')
-
-const Long = ByteBuffer.Long;
+const nacl = require("tweetnacl/nacl-fast")
 
 module.exports = {
   encrypt,
-  decrypt
+  decrypt,
+  decrypt_shared_secret,
+  encrypt_shared_secret,
 }
 
+const nonceLength = 24
 /**
     Spec: http://localhost:3002/steem/@dantheman/how-to-encrypt-a-memo-when-transferring-steem
 
@@ -20,17 +20,17 @@ module.exports = {
 
     @arg {PrivateKey} private_key - required and used for decryption
     @arg {PublicKey} public_key - required and used to calcualte the shared secret
-    @arg {string} [nonce = uniqueNonce()] - assigned a random unique uint64
 
     @return {object}
-    @property {string} nonce - random or unique uint64, provides entropy when re-using the same private/public keys.
-    @property {Buffer} message - Plain text message
-    @property {number} checksum - shared secret checksum
+    @property {Buffer} message - Secret
 */
-function encrypt(private_key, public_key, message, nonce = uniqueNonce()) {
-    return crypt(private_key, public_key, nonce, message)
+function encrypt(private_key, public_key, message) {
+    return crypt(private_key, public_key, message, true)
 }
 
+function encrypt_shared_secret(shared_secret, message) {
+  return crypt_shared_secret(shared_secret, message, true)
+}
 /**
     Spec: http://localhost:3002/steem/@dantheman/how-to-encrypt-a-memo-when-transferring-steem
 
@@ -44,8 +44,12 @@ function encrypt(private_key, public_key, message, nonce = uniqueNonce()) {
 
     @return {Buffer} - message
 */
-function decrypt(private_key, public_key, nonce, message, checksum) {
-    return crypt(private_key, public_key, nonce, message, checksum).message
+function decrypt(private_key, public_key, box) {
+    return crypt(private_key, public_key, box, false)
+}
+
+function decrypt_shared_secret(shared_secret, box) {
+  return crypt_shared_secret(shared_secret, box, false)
 }
 
 /**
@@ -53,114 +57,97 @@ function decrypt(private_key, public_key, nonce, message, checksum) {
     @arg {number} checksum - shared secret checksum (null to encrypt, non-null to decrypt)
     @private
 */
-function crypt(private_key, public_key, nonce, message, checksum) {
+function crypt(private_key, public_key, box, encrypt) {
+    let nonce, message
     private_key = PrivateKey(private_key)
     if (!private_key)
         throw new TypeError('private_key is required')
 
     public_key = PublicKey(public_key)
     if (!public_key)
-        throw new TypeError('public_key is required')
-
-    nonce = toLongObj(nonce)
-    if (!nonce)
-        throw new TypeError('nonce is required')
-
-    if (!Buffer.isBuffer(message)) {
-        if (typeof message !== 'string')
-            throw new TypeError('message should be buffer or string')
-        message = new Buffer(message, 'binary')
-    }
-    if (checksum && typeof checksum !== 'number')
-        throw new TypeError('checksum should be a number')
+        throw new TypeError('public_key is required')  
 
     const S = private_key.getSharedSecret(public_key);
-    let ebuf = new ByteBuffer(ByteBuffer.DEFAULT_CAPACITY, ByteBuffer.LITTLE_ENDIAN)
-    ebuf.writeUint64(nonce)
-    ebuf.append(S.toString('binary'), 'binary')
-    ebuf = new Buffer(ebuf.copy(0, ebuf.offset).toBinary(), 'binary')
-    const encryption_key = hash.sha512(ebuf)
-
-    // D E B U G
-    // console.log('crypt', {
-    //     priv_to_pub: private_key.toPublic().toString(),
-    //     pub: public_key.toString(),
-    //     nonce: nonce.toString(),
-    //     message: message.length,
-    //     checksum,
-    //     S: S.toString('hex'),
-    //     encryption_key: encryption_key.toString('hex'),
-    // })
-
-    const iv = encryption_key.slice(32, 48)
-    const key = encryption_key.slice(0, 32)
-
-    // check is first 64 bit of sha256 hash treated as uint64_t truncated to 32 bits.
-    let check = hash.sha256(encryption_key)
-    check = check.slice(0, 4)
-    const cbuf = ByteBuffer.fromBinary(check.toString('binary'), ByteBuffer.DEFAULT_CAPACITY, ByteBuffer.LITTLE_ENDIAN)
-    check = cbuf.readUint32()
-
-    if (checksum) {
-        if (check !== checksum)
-            throw new Error('Invalid key')
-        message = cryptoJsDecrypt(message, key, iv)
-    } else {
-        message = cryptoJsEncrypt(message, key, iv)
-    }
-    return {nonce, message, checksum: check}
+    return crypt_shared_secret(S, box, encrypt);
+    
 }
 
-/** This method does not use a checksum, the returned data must be validated some other way.
+function crypt_shared_secret(S, box, encrypt) {
+  let nonce, message
+  if(encrypt) {
+    nonce = uniqueNonce()
+    message = box
+  } else {
+    ({nonce, message} = deserialize(box))
+  }
+  if (!Buffer.isBuffer(message)) {
+      if (typeof message !== 'string')
+          throw new TypeError('message should be buffer or string')
+      message = new Buffer(message, 'binary')
+  }
+  assert(Buffer.isBuffer(S), "S is not a buffer")
+  assert(Buffer.isBuffer(nonce), "nonce is not a buffer")
+  
+  const ekey_length = S.length + nonce.length
+  let ebuf = Buffer.concat([nonce, S], ekey_length)
+  const encryption_key = hash.sha512(ebuf)
+
+  const iv = encryption_key.slice(32, 56)
+  const key = encryption_key.slice(0, 32)
+
+  if (encrypt) {
+      message = cryptoJsEncrypt(message, key, iv)
+      return serialize(nonce, message)
+  } else {
+      return cryptoJsDecrypt(message, key, iv)
+  }
+}
+
+function serialize(nonce, message) {
+  const len = nonceLength + message.length
+  return Buffer.concat([nonce, message], len)
+}
+
+function deserialize(buf) {
+  const nonce = buf.slice(0, nonceLength)
+  const message = buf.slice(nonceLength)
+  return {nonce, message}
+}
+/** This method both decrypts and checks the authenticity of the messsage.
 
     @arg {string|Buffer} message - ciphertext binary format
     @arg {string<utf8>|Buffer} key - 256bit
-    @arg {string<utf8>|Buffer} iv - 128bit
+    @arg {string<utf8>|Buffer} iv - 192bit
 
     @return {Buffer}
 */
-function cryptoJsDecrypt(message, key, iv) {
-    assert(message, "Missing cipher text")
-    message = toBinaryBuffer(message)
-    const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv)
-    // decipher.setAutoPadding(true)
-    message = Buffer.concat([decipher.update(message), decipher.final()])
-    return message
+function cryptoJsDecrypt(box, key, nonce) {
+    assert(box, "Missing cipher text")
+    box = toBinaryBuffer(box)
+    const decrypted = nacl.secretbox.open(box, nonce, key)
+    if(decrypted === null) {
+      throw new Error('Secretbox refused to open (wrong key or corrupted or tampered message)')
+    }
+    return Buffer.from(decrypted)
 }
 
-/** This method does not use a checksum, the returned data must be validated some other way.
+/** This method both encrypts and authenticates the message.
     @arg {string|Buffer} message - plaintext binary format
     @arg {string<utf8>|Buffer} key - 256bit
-    @arg {string<utf8>|Buffer} iv - 128bit
+    @arg {string<utf8>|Buffer} iv - 192bit
 
     @return {Buffer}
 */
-function cryptoJsEncrypt(message, key, iv) {
+function cryptoJsEncrypt(message, key, nonce) {
     assert(message, "Missing plain text")
     message = toBinaryBuffer(message)
-    const cipher = crypto.createCipheriv('aes-256-cbc', key, iv)
-    // cipher.setAutoPadding(true)
-    message = Buffer.concat([cipher.update(message), cipher.final()])
-    return message
+    return Buffer.from(nacl.secretbox(message, nonce, key))
 }
 
-/** @return {string} unique 64 bit unsigned number string.  Being time based, this is careful to never choose the same nonce twice.  This value could be recorded in the blockchain for a long time.
+/** @return {string} 192bit random nonce. Long enough to be unique.  This value could be recorded in the blockchain for a long time.
 */
 function uniqueNonce() {
-    if(unique_nonce_entropy === null) {
-        const b = new Uint8Array(randomBytes(2))
-        unique_nonce_entropy = parseInt(b[0] << 8 | b[1], 10)
-    }
-    let long = Long.fromNumber(Date.now())
-    const entropy = ++unique_nonce_entropy % 0xFFFF
-    // console.log('uniqueNonce date\t', ByteBuffer.allocate(8).writeUint64(long).toHex(0))
-    // console.log('uniqueNonce entropy\t', ByteBuffer.allocate(8).writeUint64(Long.fromNumber(entropy)).toHex(0))
-    long = long.shiftLeft(16).or(Long.fromNumber(entropy));
-    // console.log('uniqueNonce final\t', ByteBuffer.allocate(8).writeUint64(long).toHex(0))
-    return long.toString()
+    return randomBytes(nonceLength)
 }
-let unique_nonce_entropy = null
-// for(let i=1; i < 10; i++) key.uniqueNonce()
 
-const toLongObj = o => (o ? Long.isLong(o) ? o : Long.fromString(o) : o)
 const toBinaryBuffer = o => (o ? Buffer.isBuffer(o) ? o : new Buffer(o, 'binary') : o)

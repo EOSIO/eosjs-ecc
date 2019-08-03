@@ -5,3 +5,4 @@ coverage
 test
 lib
 dist/*.js
+.DS_Store

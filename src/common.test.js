@@ -81,16 +81,3 @@ describe('Common API', () => {
   })
 })
 
-describe('Common API (initialized)', () => {
-  it('initialize', () => ecc.initialize())
-
-  it('randomKey', () => {
-    const cpuEntropyBits = 1
-    ecc.key_utils.addEntropy(1, 2, 3)
-    const pvt = ecc.unsafeRandomKey().then(pvt => {
-      assert.equal(typeof pvt, 'string', 'pvt')
-      assert(/^5[HJK]/.test(wif))
-      // assert(/^PVT_K1_/.test(pvt))
-    })
-  })
-})
