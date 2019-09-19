@@ -1,6 +1,6 @@
 {
   "name": "eosjs-ecc",
-  "version": "4.0.4-beta1",
+  "version": "4.0.7",
   "description": "Elliptic curve cryptography functions",
   "keywords": [
     "ECC",
@@ -11,11 +11,11 @@
     "Encryption",
     "Decryption"
   ],
-  "main": "lib/index.js",
+  "main": "src/index.js",
   "files": [
     "README.md",
     "docs",
-    "lib"
+    "src"
   ],
   "scripts": {
     "test": "mocha --use_strict src/*.test.js",
