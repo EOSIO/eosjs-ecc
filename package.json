@@ -37,7 +37,7 @@
     "url": "git://github.com/EOSIO/eosjs-ecc.git"
   },
   "dependencies": {
-    "@babel/runtime": "7.4.4",
+    "@babel/runtime": "7.6.0",
     "bigi": "1.4.2",
     "browserify-aes": "1.0.6",
     "bs58": "4.0.1",
@@ -49,17 +49,17 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@babel/cli": "7.4.4",
-    "@babel/core": "7.4.4",
-    "@babel/plugin-transform-runtime": "7.4.4",
-    "@babel/preset-env": "7.4.4",
-    "browserify": "16.2.3",
-    "coveralls": "3.0.3",
-    "documentation": "8.1.1",
-    "istanbul": "0.4.5",
-    "mocha": "5.2.0",
-    "nyc": "14.1.0",
-    "terser": "3.17.0"
+    "@babel/cli": "^7.6.0",
+    "@babel/core": "^7.6.0",
+    "@babel/plugin-transform-runtime": "^7.6.0",
+    "@babel/preset-env": "^7.6.0",
+    "browserify": "^16.2.3",
+    "coveralls": "^3.0.3",
+    "documentation": "^8.1.1",
+    "istanbul": "^0.4.5",
+    "mocha": "^5.2.0",
+    "nyc": "^14.1.0",
+    "terser": "^3.17.0"
   },
   "nyc": {
     "temp-directory": "./coverage/.nyc_output"
